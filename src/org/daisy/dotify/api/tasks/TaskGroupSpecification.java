@@ -1,14 +1,45 @@
 package org.daisy.dotify.api.tasks;
 
 public final class TaskGroupSpecification {
+	public enum Type {
+		/**
+		 * Input format
+		 */
+		VALIDATING,
+		/**
+		 * Input format, properties
+		 */
+		REFINING,
+		/**
+		 * Input format, output format, locale (properties)
+		 */
+		CONVERTING
+	}
+
 	private final String input, output, locale;
+	private final Type type;
+	
+	public TaskGroupSpecification(String input, Type type) {
+		if (type == Type.CONVERTING) {
+			throw new IllegalArgumentException("Converting type not allowed on the same format.");
+		}
+		this.input = input;
+		this.output = input;
+		this.locale = null;
+		this.type = type;
+	}
 	
 	public TaskGroupSpecification(String input, String output, String locale) {
 		this.input = input;
 		this.output = output;
 		this.locale = locale;
+		this.type = input.equals(output)?Type.REFINING:Type.CONVERTING;
 	}
 	
+	public static TaskGroupSpecification newRefiningSpec(String input, String locale){
+		return null;
+	}
+
 	public String getLocale() {
 		return locale;
 	}
