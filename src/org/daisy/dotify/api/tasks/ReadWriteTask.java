@@ -34,5 +34,7 @@ public abstract class ReadWriteTask extends InternalTask { //NOPMD
 	 * @throws InternalTaskException
 	 */
 	public abstract AnnotatedFile execute(AnnotatedFile input, File output) throws InternalTaskException;
+	
+	public abstract TaskResult execute(TaskSource input) throws InternalTaskException;
 
 }
