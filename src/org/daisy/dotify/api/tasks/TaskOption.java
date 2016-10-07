@@ -3,7 +3,9 @@ package org.daisy.dotify.api.tasks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Provides a task option.
@@ -15,6 +17,8 @@ public final class TaskOption {
 	private final String 	key,
 							description,
 							defaultValue;
+	
+	private Set<String> valuesSet = null;
 	
 	public static class Builder {
 		private final String key;
@@ -107,6 +111,31 @@ public final class TaskOption {
 	 */
 	public List<TaskOptionValue> getValues() {
 		return values;
+	}
+	
+	/**
+	 * Returns true if this option accepts the specified value
+	 * @param value the value to test
+	 * @return true if the option accepts the value, false otherwise
+	 */
+	public boolean acceptsValue(String value) {
+		if (value==null) {
+			return false;
+		} else if (hasValues()) {
+			return getValuesList().contains(value);
+		} else {
+			return true;
+		}
+	}
+	
+	private Set<String> getValuesList() {
+		if (hasValues() && valuesSet==null) {
+			valuesSet = new HashSet<>();
+			for (TaskOptionValue val : getValues()) {
+				valuesSet.add(val.getName());
+			}
+		}
+		return valuesSet;
 	}
 
 }
