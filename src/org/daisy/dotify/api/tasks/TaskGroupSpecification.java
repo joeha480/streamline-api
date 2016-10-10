@@ -3,8 +3,6 @@ package org.daisy.dotify.api.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Provides a specification for a task group.
@@ -31,31 +29,23 @@ public final class TaskGroupSpecification {
 	private final String input;
 	private final String output;
 	private final String locale;
-	private final Collection<String> keys;
-	private final Map<String, String> keyValues;
+	private final Collection<TaskOption> keys;
 	
 	public static class Builder {
 		private final String input;
 		private final String output;
 		private final String locale;
-		private Collection<String> keys;
-		private Map<String, String> keyValues;
+		private Collection<TaskOption> options;
 		
 		public Builder(String input, String output, String locale) {
 			this.input = input;
 			this.output = output;
 			this.locale = locale;
-			this.keys = new ArrayList<>();
-			this.keyValues = new HashMap<>();
+			this.options = new ArrayList<>();
 		}
 		
-		public Builder addRequired(String key) {
-			keys.add(key);
-			return this;
-		}
-		
-		public Builder addRequired(String key, String value) {
-			keyValues.put(key, value);
+		public Builder addRequired(TaskOption value) {
+			options.add(value);
 			return this;
 		}
 		
@@ -69,15 +59,13 @@ public final class TaskGroupSpecification {
 		this.output = output;
 		this.locale = locale;
 		this.keys = Collections.emptySet();
-		this.keyValues = Collections.emptyMap();
 	}
 	
 	private TaskGroupSpecification(Builder builder) {
 		this.input = builder.input;
 		this.output = builder.output;
 		this.locale = builder.locale;
-		this.keys = Collections.unmodifiableCollection(new ArrayList<>(builder.keys));
-		this.keyValues = Collections.unmodifiableMap(new HashMap<>(builder.keyValues));
+		this.keys = Collections.unmodifiableCollection(new ArrayList<>(builder.options));
 	}
 	
 	/**
@@ -117,21 +105,11 @@ public final class TaskGroupSpecification {
 	}
 	
 	/**
-	 * Returns a collection of keys that <b>must</b> be provided when compiling the task group.
-	 * The collection returned  should be specified in the returned task group's options.
-	 * @return returns the collection of keys that must be provided
+	 * Returns a collection of options that <b>must</b> be provided when compiling the task group.
+	 * @return returns the collection of options that must be provided
 	 */
-	public Collection<String> requiresKeys() {
+	public Collection<TaskOption> getRequiredOptions() {
 		return keys;
-	}
-	
-	/**
-	 * Returns a map of key/value combinations that <b>must</b> be provided when compiling the task group.
-	 * The map returned should be specified in the returned task group's options.
-	 * @return returns a map of key/value combinations that must be provided
-	 */
-	public Map<String, String> requiresKeyValue() {
-		return keyValues;
 	}
 
 	@Override
@@ -139,7 +117,6 @@ public final class TaskGroupSpecification {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((input == null) ? 0 : input.hashCode());
-		result = prime * result + ((keyValues == null) ? 0 : keyValues.hashCode());
 		result = prime * result + ((keys == null) ? 0 : keys.hashCode());
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + ((output == null) ? 0 : output.hashCode());
@@ -163,13 +140,6 @@ public final class TaskGroupSpecification {
 				return false;
 			}
 		} else if (!input.equals(other.input)) {
-			return false;
-		}
-		if (keyValues == null) {
-			if (other.keyValues != null) {
-				return false;
-			}
-		} else if (!keyValues.equals(other.keyValues)) {
 			return false;
 		}
 		if (keys == null) {
