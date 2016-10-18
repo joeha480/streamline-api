@@ -50,7 +50,7 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	 * 
 	 * @return returns a new TaskGroupFactoryMaker
 	 */
-	public final static TaskGroupFactoryMaker newInstance() {
+	public static final TaskGroupFactoryMaker newInstance() {
 		TaskGroupFactoryMaker ret = new TaskGroupFactoryMaker();
 		{
 			Iterator<TaskGroupFactory> i = ServiceLoader.load(TaskGroupFactory.class).iterator();
