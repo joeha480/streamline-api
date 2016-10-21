@@ -17,7 +17,7 @@ Build with `gradlew build` (Windows) or `./gradlew build` (Mac/Linux)
 Tests are run with `gradlew test` (Windows) or `./gradlew test` (Mac/Linux)
 
 ## Requirements & Compatibility ##
-- Requires JDK 7
+- Requires Java 8
 - Implementations can be provided with SPI and/or OSGi
 
 ## Javadoc ##
