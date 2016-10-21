@@ -44,7 +44,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		
 		/**
 		 * Sets the file extension using the specified file.
-		 * @param value
+		 * @param value the file to use
 		 * @return this builder
 		 */
 		public Builder extension(File value) {

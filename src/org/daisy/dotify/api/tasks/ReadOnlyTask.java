@@ -29,7 +29,7 @@ public abstract class ReadOnlyTask extends InternalTask { //NOPMD
 	/**
 	 * 
 	 * @param input input file
-	 * @throws InternalTaskException
+	 * @throws InternalTaskException throws InternalTaskException if something goes wrong
 	 */
 	public abstract void execute(AnnotatedFile input) throws InternalTaskException;
 

@@ -22,6 +22,7 @@ public abstract class ExpandingTask extends InternalTask { //NOPMD
 	/**
 	 * Resolves the task into other tasks based on the contents of the <code>input</code>.
 	 * @param input input file
+	 * @return returns a list of internal tasks
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
 	 */
 	public abstract List<InternalTask> resolve(File input) throws InternalTaskException;
@@ -29,6 +30,7 @@ public abstract class ExpandingTask extends InternalTask { //NOPMD
 	/**
 	 * Resolves the task into other tasks based on the contents of the <code>input</code>.
 	 * @param input annotated input file
+	 * @return returns a list of internal tasks
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
 	 */
 	public abstract List<InternalTask> resolve(AnnotatedFile input) throws InternalTaskException;
