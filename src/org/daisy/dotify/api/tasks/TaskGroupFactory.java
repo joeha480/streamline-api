@@ -1,5 +1,7 @@
 package org.daisy.dotify.api.tasks;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -23,8 +25,15 @@ public interface TaskGroupFactory {
 	 * @param specification the specification to test
 	 * @return true if this factory can create instances for the specified specification, false otherwise
 	 */
-	public boolean supportsSpecification(TaskGroupSpecification specification);
-	
+	public default boolean supportsSpecification(TaskGroupSpecification specification) {
+		for (TaskGroupInformation i : listAll()) {
+			if (specification.matches(i)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns true if this factory provided this information (in other words, is 
 	 * equal to a provided information).
@@ -59,7 +68,17 @@ public interface TaskGroupFactory {
 	 * @param locale the locale 
 	 * @return returns a set of information for the specified locale
 	 */
-	public Set<TaskGroupInformation> list(String locale);
+	public default Set<TaskGroupInformation> list(String locale) {
+		//TODO: use streams
+		Objects.requireNonNull(locale);
+		Set<TaskGroupInformation> ret = new HashSet<>();
+		for (TaskGroupInformation info : listAll()) {
+			if (info.matchesLocale(locale)) {
+				ret.add(info);
+			}
+		}
+		return ret;
+	}
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using
@@ -78,5 +97,5 @@ public interface TaskGroupFactory {
 	 * <p>The class that created an instance with SPI must call this method before
 	 * putting it to use.</p>
 	 */
-	public void setCreatedWithSPI();
+	public default void setCreatedWithSPI() {}
 }

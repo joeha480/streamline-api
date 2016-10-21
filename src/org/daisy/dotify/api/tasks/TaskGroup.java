@@ -1,5 +1,6 @@
 package org.daisy.dotify.api.tasks;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +20,17 @@ public interface TaskGroup {
 	 * Get a descriptive name for the task group
 	 * @return returns the name for the task group
 	 */
-	public String getName();
+	public default String getName() {
+		return this.getClass().getName();
+	}
 	
 	/**
 	 * Gets a list of parameters applicable to this instance
 	 * @return returns a list of parameters
 	 */
-	public List<TaskOption> getOptions();
+	public default List<TaskOption> getOptions() {
+		return Collections.emptyList();
+	}
 
 	/**
 	 * Compile the task group using the supplied parameters
