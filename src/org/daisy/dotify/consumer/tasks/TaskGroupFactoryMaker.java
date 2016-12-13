@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+import org.daisy.dotify.api.tasks.TaskGroupInformation;
 import org.daisy.dotify.api.tasks.TaskGroup;
 import org.daisy.dotify.api.tasks.TaskGroupFactory;
 import org.daisy.dotify.api.tasks.TaskGroupFactoryMakerService;
@@ -121,10 +122,29 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	}
 	
 	@Override
+	@Deprecated
 	public Set<TaskGroupSpecification> listSupportedSpecifications() {
 		HashSet<TaskGroupSpecification> ret = new HashSet<>();
 		for (TaskGroupFactory h : filters) {
 			ret.addAll(h.listSupportedSpecifications());
+		}
+		return ret;
+	}
+
+	@Override
+	public Set<TaskGroupInformation> listAll() {
+		HashSet<TaskGroupInformation> ret = new HashSet<>();
+		for (TaskGroupFactory h : filters) {
+			ret.addAll(h.listAll());
+		}
+		return ret;
+	}
+
+	@Override
+	public Set<TaskGroupInformation> list(String locale) {
+		HashSet<TaskGroupInformation> ret = new HashSet<>();
+		for (TaskGroupFactory h : filters) {
+			ret.addAll(h.list(locale));
 		}
 		return ret;
 	}

@@ -12,7 +12,9 @@ import java.util.Collections;
 public final class TaskGroupSpecification {
 	/**
 	 * Specifies the type of task group
+	 * @deprecated use {@link TaskGroupActivity}
 	 */
+	@Deprecated
 	public enum Type {
 		 // Identify, Verify, Fix
 
@@ -23,7 +25,18 @@ public final class TaskGroupSpecification {
 		/**
 		 * A converting task group
 		 */
-		CONVERT
+		CONVERT;
+		
+		public TaskGroupActivity toActivity() {
+			switch(this) {
+				case ENHANCE:
+					return TaskGroupActivity.ENHANCE;
+				case CONVERT:
+					return TaskGroupActivity.CONVERT;
+				default:
+					throw new UnsupportedOperationException();
+			}
+		}
 	}
 
 	private final String input;
@@ -95,7 +108,9 @@ public final class TaskGroupSpecification {
 	/**
 	 * Gets the type of task group specification
 	 * @return the type of the task group specification
+	 * @deprecated use {@link #getActivity()}
 	 */
+	@Deprecated
 	public Type getType() {
 		if (input.equals(output)) {
 			return Type.ENHANCE;
@@ -105,11 +120,32 @@ public final class TaskGroupSpecification {
 	}
 	
 	/**
+	 * Gets the type of activity requested.
+	 * @return returns the activity type
+	 */
+	public TaskGroupActivity getActivity() {
+		return getType().toActivity(); 
+	}
+	
+	/**
 	 * Returns a collection of options that <b>must</b> be provided when compiling the task group.
 	 * @return returns the collection of options that must be provided
 	 */
 	public Collection<TaskOption> getRequiredOptions() {
 		return keys;
+	}
+
+	/**
+	 * Returns true if this specification matches the specified
+	 * task group information.
+	 * @param info the information to test
+	 * @return returns true if the specification matches
+	 */
+	public boolean matches(TaskGroupInformation info) {
+		return	getActivity().equals(info.getActivity()) &&
+				getInputFormat().equals(info.getInputFormat()) &&
+				getOutputFormat().equals(info.getOutputFormat()) &&
+				info.matchesLocale(getLocale());
 	}
 
 	@Override

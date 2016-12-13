@@ -39,7 +39,22 @@ public interface TaskGroupFactoryMakerService {
 	/**
 	 * Gets a list of supported specifications.
 	 * @return returns a list of supported specifications
+	 * @deprecated use listAll()
 	 */
+	@Deprecated
 	public Set<TaskGroupSpecification> listSupportedSpecifications();
+	
+	/**
+	 * Gets a list with information about supported task groups.
+	 * @return returns a list of information
+	 */
+	public Set<TaskGroupInformation> listAll();
+	
+	/**
+	 * Gets a list with information about supported task groups for the specified locale.
+	 * @param locale the locale
+	 * @return returns a list of information for the specified locale
+	 */
+	public Set<TaskGroupInformation> list(String locale);
 
 }

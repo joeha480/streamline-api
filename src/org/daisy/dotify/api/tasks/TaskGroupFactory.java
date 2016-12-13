@@ -35,8 +35,23 @@ public interface TaskGroupFactory {
 	/**
 	 * Lists the supported file formats.
 	 * @return returns a set of supported formats
+	 * @deprecated use listAll()
 	 */
+	@Deprecated
 	public Set<TaskGroupSpecification> listSupportedSpecifications();
+	
+	/**
+	 * Lists information about supported task groups.
+	 * @return returns a set of information
+	 */
+	public Set<TaskGroupInformation> listAll();
+	
+	/**
+	 * Lists information about supported task groups that supports the specified locale.
+	 * @param locale the locale 
+	 * @return returns a set of information for the specified locale
+	 */
+	public Set<TaskGroupInformation> list(String locale);
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using
