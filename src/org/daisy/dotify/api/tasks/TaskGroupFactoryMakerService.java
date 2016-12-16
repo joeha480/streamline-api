@@ -27,6 +27,14 @@ public interface TaskGroupFactoryMakerService {
 	 * @return returns a task group manager factory with the desired specification
 	 */
 	public TaskGroupFactory getFactory(TaskGroupSpecification specification);
+	
+	/**
+	 * Gets the task group factory that provided this information.
+	 * @param info the information
+	 * @return the task group factory that provided this information
+	 * @throws IllegalArgumentException if no known task group factory provided this information
+	 */
+	public TaskGroupFactory getFactory(TaskGroupInformation info);
 
 	/**
 	 * Creates a new input manager with the specified options.
@@ -35,6 +43,15 @@ public interface TaskGroupFactoryMakerService {
 	 * @throws IllegalArgumentException if the specified configuration isn't supported
 	 */
 	public TaskGroup newTaskGroup(TaskGroupSpecification specification);
+	
+	/**
+	 * Gets the task group what provided this information.
+	 * @param info the information
+	 * @param locale the locale
+	 * @return returns the task group
+	 * @throws IllegalArgumentException if no known task group provided this information
+	 */
+	public TaskGroup newTaskGroup(TaskGroupInformation info, String locale);
 
 	/**
 	 * Gets a list of supported specifications.

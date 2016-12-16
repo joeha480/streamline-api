@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.daisy.dotify.api.tasks.TaskGroupInformation;
 import org.daisy.dotify.api.tasks.TaskGroup;
 import org.daisy.dotify.api.tasks.TaskGroupFactory;
 import org.daisy.dotify.api.tasks.TaskGroupFactoryMakerService;
+import org.daisy.dotify.api.tasks.TaskGroupInformation;
 import org.daisy.dotify.api.tasks.TaskGroupSpecification;
 
 import aQute.bnd.annotation.component.Component;
@@ -29,12 +30,14 @@ import aQute.bnd.annotation.component.Reference;
 public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	private final List<TaskGroupFactory> filters;
 	private final Map<String, TaskGroupFactory> map;
+	private final Map<TaskGroupInformation, TaskGroupFactory> map2;
 	private final Logger logger;
 
 	public TaskGroupFactoryMaker() {
 		logger = Logger.getLogger(TaskGroupFactoryMaker.class.getCanonicalName());
 		filters = new CopyOnWriteArrayList<>();
-		this.map = Collections.synchronizedMap(new HashMap<String, TaskGroupFactory>());		
+		this.map = Collections.synchronizedMap(new HashMap<String, TaskGroupFactory>());
+		this.map2 = Collections.synchronizedMap(new HashMap<TaskGroupInformation, TaskGroupFactory>());
 	}
 
 	/**
@@ -116,9 +119,41 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	}
 	
 	@Override
+	public TaskGroupFactory getFactory(TaskGroupInformation spec) {
+		TaskGroupFactory template = map2.get(spec);
+		if (template==null) {
+			// this is to avoid adding items to the cache that were removed
+			// while iterating
+			// all synchronization is done on the original map
+			synchronized (map) {
+				for (TaskGroupFactory h : filters) {
+					if (h.supportsSpecification(spec)) {
+						logger.fine("Found a factory for " + spec.toString() + " (" + h.getClass() + ")");
+						map2.put(spec, h);
+						template = h;
+						break;
+					}
+				}
+			}
+		}
+		if (template==null) {
+			throw new IllegalArgumentException("Cannot locate an TaskGroup for " + spec.toString());
+		}
+		return template;
+	}
+	
+	@Override
 	public TaskGroup newTaskGroup(TaskGroupSpecification spec) {
 		logger.fine("Attempt to locate an input manager for " + toKey(spec));
 		return getFactory(spec).newTaskGroup(spec);
+	}
+	
+	@Override
+	public TaskGroup newTaskGroup(TaskGroupInformation spec, String locale) {
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Attempt to locate an input manager for " + spec.toString());
+		}
+		return getFactory(spec).newTaskGroup(spec.toSpecificationBuilder(locale).build());
 	}
 	
 	@Override

@@ -26,9 +26,17 @@ public interface TaskGroupFactory {
 	public boolean supportsSpecification(TaskGroupSpecification specification);
 	
 	/**
+	 * Returns true if this factory provided this information (in other words, is 
+	 * equal to a provided information).
+	 * @param specification the information to test
+	 * @return true if this factory can provided this information, false otherwise
+	 */
+	public boolean supportsSpecification(TaskGroupInformation specification);
+	
+	/**
 	 * Returns a new task group.
 	 * @param specification the specification for the task group 
-	 * @return returns a new input manager
+	 * @return returns a new task group
 	 */
 	public TaskGroup newTaskGroup(TaskGroupSpecification specification);
 

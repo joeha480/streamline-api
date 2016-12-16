@@ -232,4 +232,10 @@ public class TaskGroupInformation {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "TaskGroupInformation [input=" + input + ", output=" + output + ", locale=" + locale + ", type=" + type
+				+ ", keys=" + keys + "]";
+	}
+
 }
