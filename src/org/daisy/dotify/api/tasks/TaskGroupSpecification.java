@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Provides a specification for a task group.
+ * Provides a specification for creating a task group instance.
  * @author Joel Håkansson
  *
  */
@@ -57,6 +57,7 @@ public final class TaskGroupSpecification {
 			this.options = new ArrayList<>();
 		}
 		
+		@Deprecated
 		public Builder addRequired(TaskOption value) {
 			options.add(value);
 			return this;
@@ -130,7 +131,9 @@ public final class TaskGroupSpecification {
 	/**
 	 * Returns a collection of options that <b>must</b> be provided when compiling the task group.
 	 * @return returns the collection of options that must be provided
+	 * @deprecated required options have been moved to {@link TaskGroupInformation}
 	 */
+	@Deprecated
 	public Collection<TaskOption> getRequiredOptions() {
 		return keys;
 	}

@@ -25,7 +25,9 @@ public interface TaskGroupFactoryMakerService {
 	 * 
 	 * @param specification the specification
 	 * @return returns a task group manager factory with the desired specification
+	 * @deprecated use getFactory(TaskGroupInformation)
 	 */
+	@Deprecated
 	public TaskGroupFactory getFactory(TaskGroupSpecification specification);
 	
 	/**
@@ -37,7 +39,7 @@ public interface TaskGroupFactoryMakerService {
 	public TaskGroupFactory getFactory(TaskGroupInformation info);
 
 	/**
-	 * Creates a new input manager with the specified options.
+	 * Attempts to find a new task group that matches the supplied specification.
 	 * @param specification the specification
 	 * @return returns a new task group
 	 * @throws IllegalArgumentException if the specified configuration isn't supported

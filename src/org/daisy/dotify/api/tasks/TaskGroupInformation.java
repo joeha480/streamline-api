@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Provides information about a task group.
+ * Provides information about a task group. This information acts as an
+ * aid in the process of selecting an implementation, but also as the 
+ * key to finding the factory that creates the implementation. To 
+ * minimize the possibility of implementations shadowing each other, all 
+ * significant information is used to calculate equals/hashcode.
+ *   
  * @author Joel Håkansson
  *
  */
@@ -154,6 +159,10 @@ public class TaskGroupInformation {
 		return keys;
 	}
 	
+	/**
+	 * Provides a task group specification builder.
+	 * @return returns a builder for task group specifications
+	 */
 	public TaskGroupSpecification.Builder toSpecificationBuilder() {
 		if (getLocale()==null) {
 			throw new IllegalArgumentException("No locale.");

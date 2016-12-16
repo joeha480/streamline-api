@@ -95,6 +95,7 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	}
 	
 	@Override
+	@Deprecated
 	public TaskGroupFactory getFactory(TaskGroupSpecification spec) {
 		String specKey = toKey(spec);
 		TaskGroupFactory template = map.get(specKey);
@@ -144,14 +145,19 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	
 	@Override
 	public TaskGroup newTaskGroup(TaskGroupSpecification spec) {
-		logger.fine("Attempt to locate an input manager for " + toKey(spec));
-		return getFactory(spec).newTaskGroup(spec);
+		logger.fine("Attempt to locate a task group for " + toKey(spec));
+		for (TaskGroupInformation i : listAll()) {
+			if (spec.matches(i)) {
+				return getFactory(i).newTaskGroup(spec);
+			}
+		}
+		throw new IllegalArgumentException("Cannot find an TaskGroup for " + spec.toString());
 	}
 	
 	@Override
 	public TaskGroup newTaskGroup(TaskGroupInformation spec, String locale) {
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("Attempt to locate an input manager for " + spec.toString());
+			logger.fine("Attempt to locate a task group for " + spec.toString());
 		}
 		return getFactory(spec).newTaskGroup(spec.toSpecificationBuilder(locale).build());
 	}
