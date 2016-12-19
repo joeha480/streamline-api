@@ -20,11 +20,17 @@ public final class TaskGroupSpecification {
 		private final String input;
 		private final String output;
 		private final String locale;
+		private final TaskGroupActivity activity;
 		
 		public Builder(String input, String output, String locale) {
+			this(input, output, locale, detectActivity(input, output));
+		}
+
+		public Builder(String input, String output, String locale, TaskGroupActivity activity) {
 			this.input = input;
 			this.output = output;
 			this.locale = locale;
+			this.activity = activity;
 		}
 		
 		public TaskGroupSpecification build() {
@@ -33,17 +39,25 @@ public final class TaskGroupSpecification {
 	}
 	
 	public TaskGroupSpecification(String input, String output, String locale) {
+		this(input, output, locale, detectActivity(input, output));
+	}
+	
+	public TaskGroupSpecification(String input, String output, String locale, TaskGroupActivity activity) {
 		this.input = input;
 		this.output = output;
 		this.locale = locale;
-		this.activity = input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
+		this.activity = activity;
 	}
 	
 	private TaskGroupSpecification(Builder builder) {
 		this.input = builder.input;
 		this.output = builder.output;
 		this.locale = builder.locale;
-		this.activity = input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
+		this.activity = builder.activity;
+	}
+	
+	private static TaskGroupActivity detectActivity(String input, String output) {
+		return input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
 	}
 	
 	/**

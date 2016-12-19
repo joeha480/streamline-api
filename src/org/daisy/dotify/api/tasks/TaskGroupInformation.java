@@ -167,7 +167,7 @@ public class TaskGroupInformation {
 		if (getLocale()==null) {
 			throw new IllegalArgumentException("No locale.");
 		}
-		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), getLocale());
+		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), getLocale(), getActivity());
 	}
 	
 	public TaskGroupSpecification.Builder toSpecificationBuilder(String locale) {
@@ -176,7 +176,7 @@ public class TaskGroupInformation {
 		} else if (!matchesLocale(locale)) {
 			throw new IllegalArgumentException("Argument mismatch: " + getLocale() + " vs " + locale);
 		}
-		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), locale);
+		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), locale, getActivity());
 	}
 	
 	public boolean matchesLocale(String loc) {
