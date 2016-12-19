@@ -29,15 +29,13 @@ import aQute.bnd.annotation.component.Reference;
 @Component
 public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	private final List<TaskGroupFactory> filters;
-	private final Map<String, TaskGroupFactory> map;
-	private final Map<TaskGroupInformation, TaskGroupFactory> map2;
+	private final Map<TaskGroupInformation, TaskGroupFactory> map;
 	private final Logger logger;
 
 	public TaskGroupFactoryMaker() {
 		logger = Logger.getLogger(TaskGroupFactoryMaker.class.getCanonicalName());
 		filters = new CopyOnWriteArrayList<>();
-		this.map = Collections.synchronizedMap(new HashMap<String, TaskGroupFactory>());
-		this.map2 = Collections.synchronizedMap(new HashMap<TaskGroupInformation, TaskGroupFactory>());
+		this.map = Collections.synchronizedMap(new HashMap<TaskGroupInformation, TaskGroupFactory>());
 	}
 
 	/**
@@ -95,42 +93,16 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	}
 	
 	@Override
-	@Deprecated
-	public TaskGroupFactory getFactory(TaskGroupSpecification spec) {
-		String specKey = toKey(spec);
-		TaskGroupFactory template = map.get(specKey);
-		if (template==null) {
-			// this is to avoid adding items to the cache that were removed
-			// while iterating
-			synchronized (map) {
-				for (TaskGroupFactory h : filters) {
-					if (h.supportsSpecification(spec)) {
-						logger.fine("Found a factory for " + specKey + " (" + h.getClass() + ")");
-						map.put(specKey, h);
-						template = h;
-						break;
-					}
-				}
-			}
-		}
-		if (template==null) {
-			throw new IllegalArgumentException("Cannot locate an TaskGroup for " + toKey(spec));
-		}
-		return template;
-	}
-	
-	@Override
 	public TaskGroupFactory getFactory(TaskGroupInformation spec) {
-		TaskGroupFactory template = map2.get(spec);
+		TaskGroupFactory template = map.get(spec);
 		if (template==null) {
 			// this is to avoid adding items to the cache that were removed
 			// while iterating
-			// all synchronization is done on the original map
 			synchronized (map) {
 				for (TaskGroupFactory h : filters) {
 					if (h.supportsSpecification(spec)) {
 						logger.fine("Found a factory for " + spec.toString() + " (" + h.getClass() + ")");
-						map2.put(spec, h);
+						map.put(spec, h);
 						template = h;
 						break;
 					}
@@ -160,16 +132,6 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 			logger.fine("Attempt to locate a task group for " + spec.toString());
 		}
 		return getFactory(spec).newTaskGroup(spec.toSpecificationBuilder(locale).build());
-	}
-	
-	@Override
-	@Deprecated
-	public Set<TaskGroupSpecification> listSupportedSpecifications() {
-		HashSet<TaskGroupSpecification> ret = new HashSet<>();
-		for (TaskGroupFactory h : filters) {
-			ret.addAll(h.listSupportedSpecifications());
-		}
-		return ret;
 	}
 
 	@Override

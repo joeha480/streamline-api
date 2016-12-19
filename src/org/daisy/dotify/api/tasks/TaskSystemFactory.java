@@ -12,33 +12,12 @@ public interface TaskSystemFactory {
 	
 	/**
 	 * Returns true if this factory can create instances with the desired properties.
-	 * @param locale the desired locale
-	 * @param outputFormat the desired output format
-	 * @return returns true if this factory can create instances with the desired properties, false otherwise
-	 * @deprecated use {@link #supportsSpecification(String, String, String)}
-	 */
-	@Deprecated
-	public boolean supportsSpecification(String locale, String outputFormat);
-	
-	/**
-	 * Returns true if this factory can create instances with the desired properties.
 	 * @param inputFormat the desired input format
 	 * @param outputFormat the desired output format
 	 * @param locale the desired locale
 	 * @return returns true if this factory can create instances with the desired properties, false otherwise
 	 */
 	public boolean supportsSpecification(String inputFormat, String outputFormat, String locale);
-	
-	/**
-	 * Creates a new task system with the given properties.
-	 * @param locale the desired locale
-	 * @param outputFormat the desired output format
-	 * @return returns a new task system
-	 * @throws TaskSystemFactoryException if a task system with these properties cannot be created
-	 * @deprecated use {@link #newTaskSystem(String, String, String)}
-	 */
-	@Deprecated
-	public TaskSystem newTaskSystem(String locale, String outputFormat) throws TaskSystemFactoryException;
 	
 	/**
 	 * Creates a new task system with the given properties.

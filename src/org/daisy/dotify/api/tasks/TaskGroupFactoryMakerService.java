@@ -21,16 +21,6 @@ import java.util.Set;
 public interface TaskGroupFactoryMakerService {
 
 	/**
-	 * Gets a TaskGroupFactory that supports the specification
-	 * 
-	 * @param specification the specification
-	 * @return returns a task group manager factory with the desired specification
-	 * @deprecated use getFactory(TaskGroupInformation)
-	 */
-	@Deprecated
-	public TaskGroupFactory getFactory(TaskGroupSpecification specification);
-	
-	/**
 	 * Gets the task group factory that provided this information.
 	 * @param info the information
 	 * @return the task group factory that provided this information
@@ -55,14 +45,6 @@ public interface TaskGroupFactoryMakerService {
 	 */
 	public TaskGroup newTaskGroup(TaskGroupInformation info, String locale);
 
-	/**
-	 * Gets a list of supported specifications.
-	 * @return returns a list of supported specifications
-	 * @deprecated use listAll()
-	 */
-	@Deprecated
-	public Set<TaskGroupSpecification> listSupportedSpecifications();
-	
 	/**
 	 * Gets a list with information about supported task groups.
 	 * @return returns a list of information

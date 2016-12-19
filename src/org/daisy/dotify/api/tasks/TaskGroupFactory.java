@@ -48,14 +48,6 @@ public interface TaskGroupFactory {
 	 * @return returns a new task group
 	 */
 	public TaskGroup newTaskGroup(TaskGroupSpecification specification);
-
-	/**
-	 * Lists the supported file formats.
-	 * @return returns a set of supported formats
-	 * @deprecated use listAll()
-	 */
-	@Deprecated
-	public Set<TaskGroupSpecification> listSupportedSpecifications();
 	
 	/**
 	 * Lists information about supported task groups.

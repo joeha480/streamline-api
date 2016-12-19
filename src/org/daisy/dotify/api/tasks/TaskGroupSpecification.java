@@ -10,57 +10,21 @@ import java.util.Collections;
  *
  */
 public final class TaskGroupSpecification {
-	/**
-	 * Specifies the type of task group
-	 * @deprecated use {@link TaskGroupActivity}
-	 */
-	@Deprecated
-	public enum Type {
-		 // Identify, Verify, Fix
-
-		/**
-		 * An enhancing task group
-		 */
-		ENHANCE,
-		/**
-		 * A converting task group
-		 */
-		CONVERT;
-		
-		public TaskGroupActivity toActivity() {
-			switch(this) {
-				case ENHANCE:
-					return TaskGroupActivity.ENHANCE;
-				case CONVERT:
-					return TaskGroupActivity.CONVERT;
-				default:
-					throw new UnsupportedOperationException();
-			}
-		}
-	}
 
 	private final String input;
 	private final String output;
 	private final String locale;
-	private final Collection<TaskOption> keys;
+	private final TaskGroupActivity activity;
 	
 	public static class Builder {
 		private final String input;
 		private final String output;
 		private final String locale;
-		private Collection<TaskOption> options;
 		
 		public Builder(String input, String output, String locale) {
 			this.input = input;
 			this.output = output;
 			this.locale = locale;
-			this.options = new ArrayList<>();
-		}
-		
-		@Deprecated
-		public Builder addRequired(TaskOption value) {
-			options.add(value);
-			return this;
 		}
 		
 		public TaskGroupSpecification build() {
@@ -72,14 +36,14 @@ public final class TaskGroupSpecification {
 		this.input = input;
 		this.output = output;
 		this.locale = locale;
-		this.keys = Collections.emptySet();
+		this.activity = input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
 	}
 	
 	private TaskGroupSpecification(Builder builder) {
 		this.input = builder.input;
 		this.output = builder.output;
 		this.locale = builder.locale;
-		this.keys = Collections.unmodifiableCollection(new ArrayList<>(builder.options));
+		this.activity = input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
 	}
 	
 	/**
@@ -107,37 +71,13 @@ public final class TaskGroupSpecification {
 	}
 	
 	/**
-	 * Gets the type of task group specification
-	 * @return the type of the task group specification
-	 * @deprecated use {@link #getActivity()}
-	 */
-	@Deprecated
-	public Type getType() {
-		if (input.equals(output)) {
-			return Type.ENHANCE;
-		} else {
-			return Type.CONVERT;
-		}
-	}
-	
-	/**
 	 * Gets the type of activity requested.
 	 * @return returns the activity type
 	 */
 	public TaskGroupActivity getActivity() {
-		return getType().toActivity(); 
+		return activity; 
 	}
 	
-	/**
-	 * Returns a collection of options that <b>must</b> be provided when compiling the task group.
-	 * @return returns the collection of options that must be provided
-	 * @deprecated required options have been moved to {@link TaskGroupInformation}
-	 */
-	@Deprecated
-	public Collection<TaskOption> getRequiredOptions() {
-		return keys;
-	}
-
 	/**
 	 * Returns true if this specification matches the specified
 	 * task group information.
@@ -155,8 +95,8 @@ public final class TaskGroupSpecification {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((activity == null) ? 0 : activity.hashCode());
 		result = prime * result + ((input == null) ? 0 : input.hashCode());
-		result = prime * result + ((keys == null) ? 0 : keys.hashCode());
 		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
 		result = prime * result + ((output == null) ? 0 : output.hashCode());
 		return result;
@@ -174,18 +114,14 @@ public final class TaskGroupSpecification {
 			return false;
 		}
 		TaskGroupSpecification other = (TaskGroupSpecification) obj;
+		if (activity != other.activity) {
+			return false;
+		}
 		if (input == null) {
 			if (other.input != null) {
 				return false;
 			}
 		} else if (!input.equals(other.input)) {
-			return false;
-		}
-		if (keys == null) {
-			if (other.keys != null) {
-				return false;
-			}
-		} else if (!keys.equals(other.keys)) {
 			return false;
 		}
 		if (locale == null) {

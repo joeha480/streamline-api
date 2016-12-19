@@ -17,18 +17,6 @@ package org.daisy.dotify.api.tasks;
  * 
  */
 public interface TaskSystemFactoryMakerService {
-
-	/**
-	 * Gets a TaskSystemFactory that supports the specified locale and format.
-	 * 
-	 * @param locale the target locale
-	 * @param outputFormat the output file format
-	 * @return returns a task system factory for the specified locale and format
-	 * @throws TaskSystemFactoryException if a factory cannot be returned
-	 * @deprecated use {@link #getFactory(String, String, String)}
-	 */
-	@Deprecated
-	public TaskSystemFactory getFactory(String locale, String outputFormat) throws TaskSystemFactoryException;
 	
 	/**
 	 * Gets a TaskSystemFactory that supports the specified locale and format.
@@ -40,17 +28,6 @@ public interface TaskSystemFactoryMakerService {
 	 * @throws TaskSystemFactoryException if a factory cannot be returned
 	 */
 	public TaskSystemFactory getFactory(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
-	
-	/**
-	 *  Gets a task system for the specified output format and context
-	 *  @param locale the target locale
-	 *  @param outputFormat the output file format
-	 *  @return returns a task system for the specified locale and format
-	 *  @throws TaskSystemFactoryException if a task system cannot be returned
-	 *  @deprecated use {@link #newTaskSystem(String, String, String)}
-	 */
-	@Deprecated
-	public TaskSystem newTaskSystem(String locale, String outputFormat) throws TaskSystemFactoryException;
 	
 	/**
 	 *  Gets a task system for the specified output format and context
