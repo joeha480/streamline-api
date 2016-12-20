@@ -173,7 +173,7 @@ public class TaskGroupInformation {
 	public TaskGroupSpecification.Builder toSpecificationBuilder(String locale) {
 		if (locale==null) {
 			throw new IllegalArgumentException("Null locale not allowed.");
-		} else if (!locale.equals(getLocale())) {
+		} else if (!matchesLocale(locale)) {
 			throw new IllegalArgumentException("Argument mismatch: " + getLocale() + " vs " + locale);
 		}
 		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), locale);
