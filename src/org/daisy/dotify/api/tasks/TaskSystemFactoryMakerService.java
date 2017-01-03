@@ -25,8 +25,21 @@ public interface TaskSystemFactoryMakerService {
 	 * @param outputFormat the output file format
 	 * @return returns a task system factory for the specified locale and format
 	 * @throws TaskSystemFactoryException if a factory cannot be returned
+	 * @deprecated use {@link #getFactory(String, String, String)}
 	 */
+	@Deprecated
 	public TaskSystemFactory getFactory(String locale, String outputFormat) throws TaskSystemFactoryException;
+	
+	/**
+	 * Gets a TaskSystemFactory that supports the specified locale and format.
+	 * 
+	 * @param inputFormat the input file format
+	 * @param outputFormat the output file format
+	 * @param locale the target locale
+	 * @return returns a task system factory for the specified locale and format
+	 * @throws TaskSystemFactoryException if a factory cannot be returned
+	 */
+	public TaskSystemFactory getFactory(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
 	
 	/**
 	 *  Gets a task system for the specified output format and context
@@ -34,6 +47,18 @@ public interface TaskSystemFactoryMakerService {
 	 *  @param outputFormat the output file format
 	 *  @return returns a task system for the specified locale and format
 	 *  @throws TaskSystemFactoryException if a task system cannot be returned
+	 *  @deprecated use {@link #newTaskSystem(String, String, String)}
 	 */
+	@Deprecated
 	public TaskSystem newTaskSystem(String locale, String outputFormat) throws TaskSystemFactoryException;
+	
+	/**
+	 *  Gets a task system for the specified output format and context
+	 *  @param inputFormat the input file format
+	 *  @param outputFormat the output file format
+	 *  @param locale the target locale
+	 *  @return returns a task system for the specified locale and format
+	 *  @throws TaskSystemFactoryException if a task system cannot be returned
+	 */
+	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
 }

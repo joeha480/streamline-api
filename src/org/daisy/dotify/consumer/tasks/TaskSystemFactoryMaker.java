@@ -82,11 +82,17 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 		}
 	}
 	
+	@Deprecated
 	private static String toKey(String context, String outputFormat) {
 		return context + "(" + outputFormat + ")";
 	}
 	
+	private static String toKey(String inputFormat, String outputFormat, String context) {
+		return context + "(" + inputFormat + "->" + outputFormat + ")";
+	}
+	
 	@Override
+	@Deprecated
 	public TaskSystemFactory getFactory(String locale, String outputFormat) throws TaskSystemFactoryException {
 		TaskSystemFactory template = map.get(toKey(locale, outputFormat));
 		if (template==null) {
@@ -106,7 +112,35 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 	}
 	
 	@Override
+	@Deprecated
 	public TaskSystem newTaskSystem(String context, String outputFormat) throws TaskSystemFactoryException {
 		return getFactory(context, outputFormat).newTaskSystem(context, outputFormat);
+	}
+
+	@Override
+	public TaskSystemFactory getFactory(String inputFormat, String outputFormat, String locale)
+			throws TaskSystemFactoryException {
+		String key = toKey(inputFormat, outputFormat, locale);
+		TaskSystemFactory template = map.get(key);
+		if (template==null) {
+			for (TaskSystemFactory h : filters) {
+				if (h.supportsSpecification(inputFormat, outputFormat, locale)) {
+					logger.fine("Found a factory for " + locale + " (" + h.getClass() + ")");
+					map.put(key, h);
+					template = h;
+					break;
+				}
+			}
+		}
+		if (template==null) {
+			throw new TaskSystemFactoryException("Cannot locate a TaskSystemFactory for " + key);
+		}
+		return template;
+	}
+
+	@Override
+	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale)
+			throws TaskSystemFactoryException {
+		return getFactory(inputFormat, outputFormat, locale).newTaskSystem(inputFormat, outputFormat, locale);
 	}
 }
