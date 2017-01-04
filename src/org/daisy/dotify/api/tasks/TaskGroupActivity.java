@@ -1,5 +1,9 @@
 package org.daisy.dotify.api.tasks;
 
+/**
+ * Defines task group activites.
+ * @author Joel Håkansson
+ */
 public enum TaskGroupActivity {
 	 // Identify, Verify, Fix
 

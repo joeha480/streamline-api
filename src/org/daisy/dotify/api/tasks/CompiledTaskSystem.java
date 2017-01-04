@@ -2,6 +2,12 @@ package org.daisy.dotify.api.tasks;
 
 import java.util.List;
 
+/**
+ * Provides a compiled task system, which provides the tasks to 
+ * execute as well as its name and relevant options.
+ *  
+ * @author Joel Håkansson
+ */
 public interface CompiledTaskSystem extends List<InternalTask> {
 	
 	/**

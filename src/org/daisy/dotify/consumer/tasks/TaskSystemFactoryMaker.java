@@ -32,6 +32,9 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 	private final Map<String, TaskSystemFactory> map;
 	private final Logger logger;
 
+	/**
+	 * Creates a new task system factory maker.
+	 */
 	public TaskSystemFactoryMaker() {
 		logger = Logger.getLogger(TaskSystemFactoryMaker.class.getCanonicalName());
 		filters = new CopyOnWriteArrayList<>();
@@ -65,12 +68,20 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 		return ret;
 	}
 	
+	/**
+	 * Adds a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to add
+	 */
 	@Reference(type = '*')
 	public void addFactory(TaskSystemFactory factory) {
 		logger.finer("Adding factory: " + factory);
 		filters.add(factory);
 	}
 
+	/**
+	 * Removes a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to remove
+	 */
 	// Unbind reference added automatically from addFactory annotation
 	public void removeFactory(TaskSystemFactory factory) {
 		logger.finer("Removing factory: " + factory);

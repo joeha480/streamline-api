@@ -18,11 +18,19 @@ import org.daisy.dotify.api.tasks.DefaultAnnotatedFile;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Reference;
 
+/**
+ * Provides file identification based on its contents.
+ * 
+ * @author Joel Håkansson
+ */
 @Component
 public class IdentityProvider implements IdentityProviderService {
 	private final List<IdentifierFactory> filters;
 	private static final Logger logger = Logger.getLogger(IdentityProvider.class.getCanonicalName());
 	
+	/**
+	 * Creates a new empty identity provider.
+	 */
 	public IdentityProvider() {
 		this.filters = new CopyOnWriteArrayList<>();
 	}
@@ -52,6 +60,10 @@ public class IdentityProvider implements IdentityProviderService {
 		return ret;
 	}
 	
+	/**
+	 * Adds a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to add
+	 */
 	@Reference(type = '*')
 	public void addFactory(IdentifierFactory factory) {
 		if (logger.isLoggable(Level.FINER)) {
@@ -60,6 +72,10 @@ public class IdentityProvider implements IdentityProviderService {
 		filters.add(factory);
 	}
 
+	/**
+	 * Removes a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to remove
+	 */
 	// Unbind reference added automatically from addFactory annotation
 	public void removeFactory(IdentifierFactory factory) {
 		if (logger.isLoggable(Level.FINER)) {

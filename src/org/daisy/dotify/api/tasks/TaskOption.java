@@ -20,32 +20,60 @@ public final class TaskOption {
 	
 	private Set<String> valuesSet = null;
 	
+	/**
+	 * Creates a task option builder.
+	 */
 	public static class Builder {
 		private final String key;
 		private String description = "";
 		private String defaultValue = "";
 		private List<TaskOptionValue> values;
 		
+		/**
+		 * Creates a new builder with the specified name.
+		 * @param key the option name
+		 */
 		public Builder(String key) {
 			this.key = key;
 			this.values = new ArrayList<TaskOptionValue>();
 		}
 		
+		/**
+		 * Sets the option's description.
+		 * @param value the description
+		 * @return returns this builder
+		 */
 		public Builder description(String value) {
 			this.description = value;
 			return this;
 		}
 		
+		/**
+		 * Sets the option's default value. 
+		 * @param value the default value
+		 * @return returns this builder
+		 */
 		public Builder defaultValue(String value) {
 			this.defaultValue = value;
 			return this;
 		}
 		
+		/**
+		 * Adds an accepted value to this option. If no value is
+		 * added, any value is accepted.
+		 * 
+		 * @param value the value
+		 * @return returns this builder
+		 */
 		public Builder addValue(TaskOptionValue value) {
 			values.add(value);
 			return this;
 		}
 		
+		/**
+		 * Creates a new task option based on the current state of the builder.
+		 * @return returns a new task option
+		 */
 		public TaskOption build() {
 			return new TaskOption(this);
 		}

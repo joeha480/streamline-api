@@ -32,6 +32,9 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 	private final Map<TaskGroupInformation, TaskGroupFactory> map;
 	private final Logger logger;
 
+	/**
+	 * Creates a new task group factory maker.
+	 */
 	public TaskGroupFactoryMaker() {
 		logger = Logger.getLogger(TaskGroupFactoryMaker.class.getCanonicalName());
 		filters = new CopyOnWriteArrayList<>();
@@ -65,12 +68,20 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 		return ret;
 	}
 
+	/**
+	 * Adds a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to add
+	 */
 	@Reference(type = '*')
 	public void addFactory(TaskGroupFactory factory) {
 		logger.finer("Adding factory: " + factory);
 		filters.add(factory);
 	}
 
+	/**
+	 * Removes a factory (intended for use by the OSGi framework)
+	 * @param factory the factory to remove
+	 */
 	// Unbind reference added automatically from addFactory annotation
 	public void removeFactory(TaskGroupFactory factory) {
 		logger.finer("Removing factory: " + factory);

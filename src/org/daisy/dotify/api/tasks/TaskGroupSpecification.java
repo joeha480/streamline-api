@@ -1,9 +1,5 @@
 package org.daisy.dotify.api.tasks;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 /**
  * Provides a specification for creating a task group instance.
  * @author Joel Håkansson
@@ -16,16 +12,33 @@ public final class TaskGroupSpecification {
 	private final String locale;
 	private final TaskGroupActivity activity;
 	
+	/**
+	 * Provides a task group specification builder.
+	 */
 	public static class Builder {
 		private final String input;
 		private final String output;
 		private final String locale;
 		private final TaskGroupActivity activity;
 		
+		/**
+		 * Creates a new builder with the specified parameters.
+		 * @param input the input format
+		 * @param output the output format
+		 * @param locale the locale
+		 */
 		public Builder(String input, String output, String locale) {
 			this(input, output, locale, detectActivity(input, output));
 		}
 
+		/**
+/**
+		 * Creates a new builder with the specified parameters.
+		 * @param input the input format
+		 * @param output the output format
+		 * @param locale the locale
+		 * @param activity the activity type
+		 */
 		public Builder(String input, String output, String locale, TaskGroupActivity activity) {
 			this.input = input;
 			this.output = output;
@@ -33,15 +46,32 @@ public final class TaskGroupSpecification {
 			this.activity = activity;
 		}
 		
+		/**
+		 * Creates a new task group specification using the current state of the builder.
+		 * @return returns a new task group specification
+		 */
 		public TaskGroupSpecification build() {
 			return new TaskGroupSpecification(this);
 		}
 	}
 	
+	/**
+	 * Creates a new task group specification with the specified parameters.
+	 * @param input the input format
+	 * @param output the output format
+	 * @param locale the locale
+	 */
 	public TaskGroupSpecification(String input, String output, String locale) {
 		this(input, output, locale, detectActivity(input, output));
 	}
-	
+
+	/**
+	 * Creates a new task group specification with the specified parameters.
+	 * @param input the input format
+	 * @param output the output format
+	 * @param locale the locale
+	 * @param activity the activity type
+	 */	
 	public TaskGroupSpecification(String input, String output, String locale, TaskGroupActivity activity) {
 		this.input = input;
 		this.output = output;

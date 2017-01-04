@@ -24,6 +24,9 @@ public class TaskGroupInformation {
 	private final TaskGroupActivity type;
 	private final List<TaskOption> keys;
 	
+	/**
+	 * Provides a builder for task group information
+	 */
 	public static class Builder {
 		private final String input;
 		private final String output;
@@ -32,6 +35,12 @@ public class TaskGroupInformation {
 		private String locale = null; 
 		private List<TaskOption> keys = null;
 
+		/**
+		 * Creates a new builder with the specified options
+		 * @param input the input format
+		 * @param output the output format
+		 * @param type the activity type
+		 */
 		public Builder(String input, String output, TaskGroupActivity type) {
 			Objects.requireNonNull(input, "Input format cannot be null.");
 			Objects.requireNonNull(output, "Output format cannot be null.");
@@ -55,16 +64,30 @@ public class TaskGroupInformation {
 			this.type = type;
 		}
 
+		/**
+		 * Sets the locale for the builder.
+		 * @param value the locale
+		 * @return returns this builder
+		 */
 		public Builder locale(String value) {
 			this.locale = value;
 			return this;
 		}
 		
+		/**
+		 * Sets the required options for the builder.
+		 * @param keys the required options
+		 * @return returns this builder
+		 */
 		public Builder setRequiredOptions(List<TaskOption> keys) {
 			this.keys = keys;
 			return this;
 		}
 		
+		/**
+		 * Creates a new task group information based on the current state of the builder.
+		 * @return returns a new task group information instance
+		 */
 		public TaskGroupInformation build() {
 			return new TaskGroupInformation(this);
 		}
@@ -78,23 +101,26 @@ public class TaskGroupInformation {
 		return new Builder(getInputFormat(), getOutputFormat(), getActivity()).locale(getLocale()).setRequiredOptions(keys);
 	}
 	
+	/**
+	 * Creates a new builder of convert type with the specified parameters.
+	 * @param input the input format
+	 * @param output the output format
+	 * @return returns a new builder
+	 */
 	public static Builder newConvertBuilder(String input, String output) {
 		return new Builder(input, output, TaskGroupActivity.CONVERT);
 	}
 
+	/**
+	 * Creates a new builder of enhance type for the specified format.
+	 * @param format the format
+	 * @return returns a new builder
+	 */
 	public static Builder newEnhanceBuilder(String format) {
 		return new Builder(format, format, TaskGroupActivity.ENHANCE);
 	}
 
 /*
-	public static Builder newIdentifyBuilder(String output) {
-		return new Builder(null, output, null);
-	}
-	
-	public static Builder newIdentifyBuilder(String input, String output) {
-		return new Builder(input, output, null);
-	}
-	
 	public static Builder newValidateBuilder(String format) {
 		return new Builder(format, format, null);
 	}
@@ -170,6 +196,11 @@ public class TaskGroupInformation {
 		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), getLocale(), getActivity());
 	}
 	
+	/**
+	 * Creates a new task group specification builder with the current information and for the specified locale.
+	 * @param locale the locale
+	 * @return returns a new task group specification builder
+	 */
 	public TaskGroupSpecification.Builder toSpecificationBuilder(String locale) {
 		if (locale==null) {
 			throw new IllegalArgumentException("Null locale not allowed.");
@@ -179,6 +210,11 @@ public class TaskGroupInformation {
 		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), locale, getActivity());
 	}
 	
+	/**
+	 * Returns true if the information matches the specified locale.
+	 * @param loc the locale to test
+	 * @return returns true if the information is a match for the locale, false otherwise
+	 */
 	public boolean matchesLocale(String loc) {
 		return getLocale()==null || getLocale().startsWith(loc);
 	}

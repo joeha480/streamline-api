@@ -11,19 +11,35 @@ public final class TaskOptionValue {
 	private final String 	name,
 							description;
 	
+	/**
+	 * Provides a task option value builder.
+	 */
 	public static class Builder {
 		private final String name;
 		private String description = "";
 		
+		/**
+		 * Creates a new builder with the specified option value name 
+		 * @param name the option value's name
+		 */
 		public Builder(String name) {
 			this.name = name;
 		}
 		
+		/**
+		 * Sets the value's description.
+		 * @param value the description
+		 * @return returns this builder
+		 */
 		public Builder description(String value) {
 			this.description = value;
 			return this;
 		}
 		
+		/**
+		 * Creates a new task option value based on the current state of the builder.
+		 * @return returns a new task option value
+		 */
 		public TaskOptionValue build() {
 			return new TaskOptionValue(this);
 		}
