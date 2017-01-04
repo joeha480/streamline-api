@@ -132,11 +132,7 @@ public class TaskGroupInformation {
 	private TaskGroupInformation(Builder builder) {
 		this.input = builder.input;
 		this.output = builder.output;
-		if (input.equals(output)) {
-			this.type = TaskGroupActivity.ENHANCE;
-		} else {
-			this.type = TaskGroupActivity.CONVERT;
-		}
+		this.type = builder.type;
 		this.locale = builder.locale;
 		if (builder.keys==null) {
 			this.keys = Collections.emptyList(); 
