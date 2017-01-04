@@ -5,8 +5,10 @@
 Provides an API for managing file conversions. For an example implementation see dotify.task.impl.
 
 ## Using ##
-To implement the API, download the latest release from maven central using the following information: `org.daisy.dotify:dotify.task-api:2.1.0`
-To use the API, you need to download an implementation as well.
+To implement the API, download [a release](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.daisy.dotify%22%20AND%20a%3A%22dotify.task-api%22) from maven central.
+
+To use the API, you need to have access to at least one implementation as well. Here's a list of known implementations:
+ - dotify.task.impl
 
 ## Building ##
 Build with `gradlew build` (Windows) or `./gradlew build` (Mac/Linux)
