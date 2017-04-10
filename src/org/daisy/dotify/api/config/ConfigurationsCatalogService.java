@@ -1,6 +1,6 @@
 package org.daisy.dotify.api.config;
 
-import java.util.Properties;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -33,7 +33,7 @@ public interface ConfigurationsCatalogService {
 	 * @return returns properties for the configuration
 	 * @throws ConfigurationsProviderException if identifier is unknown.
 	 */
-	public Properties getConfiguration(String identifier) throws ConfigurationsProviderException;
+	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException;
 	
 	/**
 	 * Gets the description for a specified configuration.

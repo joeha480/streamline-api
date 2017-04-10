@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -143,7 +142,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 	}
 
 	@Override
-	public Properties getConfiguration(String identifier) throws ConfigurationsProviderException {
+	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException {
 		ConfigurationsProvider provider = assertProvider(identifier);
 		if (provider!=null) {
 			return provider.getConfiguration(identifier);
