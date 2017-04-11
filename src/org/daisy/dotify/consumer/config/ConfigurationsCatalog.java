@@ -12,6 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.daisy.dotify.api.config.ConfigurationDetails;
 import org.daisy.dotify.api.config.ConfigurationsCatalogService;
 import org.daisy.dotify.api.config.ConfigurationsProvider;
 import org.daisy.dotify.api.config.ConfigurationsProviderException;
@@ -103,10 +104,10 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 
 
 	@Override
-	public Set<String> getKeys() {
-		Set<String> keys = new HashSet<>();
+	public Set<ConfigurationDetails> getConfigurationDetails() {
+		Set<ConfigurationDetails> keys = new HashSet<>();
 		for (ConfigurationsProvider p : providers) {
-			keys.addAll(p.getConfigurationKeys());
+			keys.addAll(p.getConfigurationDetails());
 		}
 		return keys;
 	}
@@ -121,14 +122,14 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 			// while iterating
 			synchronized (map) {
 				for (ConfigurationsProvider p : providers) {
-					for (String key : p.getConfigurationKeys()) {
-						if (identifier.equals(key)) {
+					for (ConfigurationDetails details : p.getConfigurationDetails()) {
+						if (identifier.equals(details.getKey())) {
 							if (logger.isLoggable(Level.FINE)) {
 								logger.fine("Found a factory for " + identifier + " (" + p.getClass() + ")");
 							}
-							ConfigurationsProvider o = map.put(key, p);
+							ConfigurationsProvider o = map.put(details.getKey(), p);
 							if (logger.isLoggable(Level.FINE) && o!=null) {
-								logger.fine("Configuration with identifier " + key + " in " + o.getClass().getCanonicalName()
+								logger.fine("Configuration with identifier " + details.getKey() + " in " + o.getClass().getCanonicalName()
 										+ " replaced by configuration in " + p.getClass().getCanonicalName());
 							}
 							provider = p;
@@ -148,16 +149,6 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 			return provider.getConfiguration(identifier);
 		} else {
 			throw new ConfigurationsProviderException("Failed to locate resource with identifier: " + identifier);
-		}
-	}
-
-	@Override
-	public String getConfigurationDescription(String identifier) {
-		ConfigurationsProvider provider = assertProvider(identifier);
-		if (provider!=null) {
-			return provider.getConfigurationDescription(identifier);
-		} else {
-			return "";
 		}
 	}
 

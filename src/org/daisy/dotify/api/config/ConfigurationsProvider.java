@@ -13,25 +13,18 @@ import java.util.Set;
 public interface ConfigurationsProvider {
 	
 	/**
-	 * Gets all configuration keys available in the provider.
-	 * @return returns a set of configuration keys.
+	 * Gets all configuration details available in the provider.
+	 * @return returns a set of configuration details.
 	 */
-	public Set<String> getConfigurationKeys();
+	public Set<ConfigurationDetails> getConfigurationDetails();
 	
 	/**
 	 * Returns the properties associated with the specified by the identifier.
-	 * @param identifier the configuration key
+	 * @param key the configuration identifier
 	 * @return returns the configuration properties
 	 * @throws ConfigurationsProviderException if a configuration cannot be returned.
 	 */
-	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException;
-	
-	/**
-	 * Gets the description for a specified configuration.
-	 * @param identifier the configuration key
-	 * @return returns the description, or null
-	 */
-	public String getConfigurationDescription(String identifier);
+	public Map<String, Object> getConfiguration(String key) throws ConfigurationsProviderException;
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using

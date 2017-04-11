@@ -22,10 +22,10 @@ public interface ConfigurationsCatalogService {
 
 	
 	/**
-	 * Gets all configuration keys available to the configurations catalog.
-	 * @return returns a set of configuration keys.
+	 * Gets all configuration details available to the configurations catalog.
+	 * @return returns a set of configuration details.
 	 */
-	public Set<String> getKeys();
+	public Set<ConfigurationDetails> getConfigurationDetails();
 	
 	/**
 	 * Returns configuration properties associated with the identifier.
@@ -34,12 +34,5 @@ public interface ConfigurationsCatalogService {
 	 * @throws ConfigurationsProviderException if identifier is unknown.
 	 */
 	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException;
-	
-	/**
-	 * Gets the description for a specified configuration.
-	 * @param identifier the configuration key
-	 * @return returns the description, or null
-	 */
-	public String getConfigurationDescription(String identifier);
 
 }
