@@ -1,5 +1,6 @@
 package org.daisy.dotify.api.validity;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
  */
 public final class ValidatorMessage {
 	private final Type type;
+	private final Optional<URI> uri;
 	private final Optional<Exception> exception;
 	private final Optional<String> message;
 	private final int lineNumber;
@@ -33,6 +35,7 @@ public final class ValidatorMessage {
 		private String message = null;
 		private int lineNumber = -1;
 		private int columnNumber = -1;
+		private URI uri = null;
 
 		/**
 		 * Creates a new builder of the specified type.
@@ -85,6 +88,13 @@ public final class ValidatorMessage {
 			this.columnNumber = value;
 			return this;
 		}
+		public Builder uri(URI value) {
+			if (value.isOpaque() || value.isAbsolute()) {
+				throw new IllegalArgumentException("Opaque or absolute uri.");
+			}
+			this.uri = value;
+			return this;
+		}
 		/**
 		 * Creates a new {@link ValidatorMessage} based on the current state of this builder.
 		 * @return returns a new {@link ValidatorMessage}
@@ -105,6 +115,7 @@ public final class ValidatorMessage {
 
 	private ValidatorMessage(Builder builder) {
 		this.type = builder.type;
+		this.uri = Optional.ofNullable(builder.uri);
 		this.exception = Optional.ofNullable(builder.exception);
 		this.message = Optional.ofNullable(builder.message);
 		this.lineNumber = builder.lineNumber;
@@ -157,6 +168,10 @@ public final class ValidatorMessage {
 	 */
 	public Type getType() {
 		return type;
+	}
+	
+	public Optional<URI> getURI() {
+		return uri;
 	}
 
 	@Override
