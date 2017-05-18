@@ -3,7 +3,6 @@ package org.daisy.dotify.consumer.config;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -63,9 +62,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 	 */
 	public static final ConfigurationsCatalog newInstance() {
 		ConfigurationsCatalog ret =  new ConfigurationsCatalog();
-		Iterator<ConfigurationsProvider> i = ServiceLoader.load(ConfigurationsProvider.class).iterator();
-		while (i.hasNext()) {
-			ConfigurationsProvider provider = i.next();
+		for (ConfigurationsProvider provider : ServiceLoader.load(ConfigurationsProvider.class)) {
 			provider.setCreatedWithSPI();
 			ret.addFactory(provider);
 		}

@@ -2,7 +2,6 @@ package org.daisy.dotify.consumer.tasks;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -58,9 +57,7 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 	public static TaskSystemFactoryMaker newInstance() {
 		TaskSystemFactoryMaker ret = new TaskSystemFactoryMaker();
 		{
-			Iterator<TaskSystemFactory> i = ServiceLoader.load(TaskSystemFactory.class).iterator();
-			while (i.hasNext()) {
-				TaskSystemFactory factory = i.next();
+			for (TaskSystemFactory factory : ServiceLoader.load(TaskSystemFactory.class)) {
 				factory.setCreatedWithSPI();
 				ret.addFactory(factory);
 			}

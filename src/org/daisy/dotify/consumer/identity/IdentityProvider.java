@@ -2,7 +2,6 @@ package org.daisy.dotify.consumer.identity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,9 +50,7 @@ public class IdentityProvider implements IdentityProviderService {
 	 */
 	public static final IdentityProviderService newInstance() {
 		IdentityProvider ret = new IdentityProvider();
-		Iterator<IdentifierFactory> i = ServiceLoader.load(IdentifierFactory.class).iterator();
-		while (i.hasNext()) {
-			IdentifierFactory factory = i.next();
+		for (IdentifierFactory factory : ServiceLoader.load(IdentifierFactory.class)) {
 			factory.setCreatedWithSPI();
 			ret.addFactory(factory);
 		}
