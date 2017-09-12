@@ -8,7 +8,8 @@ Private-Package:  \
 	org.daisy.dotify.consumer.config,\
 	org.daisy.dotify.consumer.identity,\
 	org.daisy.dotify.consumer.tasks,\
-	org.daisy.dotify.consumer.validity
+	org.daisy.dotify.consumer.validity,\
+	org.daisy.dotify.impl.tasks
 Include-Resource: / = src/
 -sources: false
 Service-Component: *

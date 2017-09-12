@@ -28,6 +28,14 @@ public interface TaskSystemFactory {
 	 * @throws TaskSystemFactoryException if a task system with these properties cannot be created
 	 */
 	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
+	
+	/**
+	 * Returns the priority when choosing between several matching task systems.
+	 * @return returns the priority.
+	 */
+	public default int getPriority() {
+		return 0;
+	}
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using
