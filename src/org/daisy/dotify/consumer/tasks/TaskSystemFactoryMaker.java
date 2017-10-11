@@ -97,6 +97,8 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 	@Override
 	public TaskSystemFactory getFactory(String inputFormat, String outputFormat, String locale)
 			throws TaskSystemFactoryException {
+        logger.warning("The artifact 'org.daisy.dotify:dotify.task-api' has moved. Please update your build to use the new name 'org.daisy.streamline:streamline-api'."
+                + "The first version under the new name is identical to the last under the old name, except for this message.");
 		String key = toKey(inputFormat, outputFormat, locale);
 		TaskSystemFactory template = map.get(key);
 		if (template==null) {
