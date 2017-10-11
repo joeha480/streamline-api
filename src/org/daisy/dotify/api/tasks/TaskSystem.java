@@ -1,5 +1,6 @@
 package org.daisy.dotify.api.tasks;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -21,5 +22,14 @@ public interface TaskSystem extends TaskGroup {
 	 */
 	public CompiledTaskSystem compile(Map<String, Object> parameters) throws TaskSystemException;
 	
+
+	/**
+	 * Compile the task system with no parameters. To specify parameters, use {@link #compile(Map)}.
+	 * @return returns a compiled task system
+	 * @throws TaskSystemException if something goes wrong when compiling the task system
+	 */
+	public default CompiledTaskSystem compile()  throws TaskSystemException {
+		return compile(Collections.emptyMap());
+	}
 
 }
