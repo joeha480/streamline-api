@@ -4,7 +4,7 @@ apply plugin: "maven"
 apply plugin: "org.dm.bundle"
 apply plugin: "signing"
 
-group = 'org.daisy.dotify'
+group = 'org.daisy.streamline'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -124,9 +124,9 @@ uploadArchives {
                 authentication(userName: sonatypeUsername, password: sonatypePassword)
             }
             pom.project {
-                name 'dotify.task-api'
+                name 'streamline-api'
                 packaging 'jar'
-                description 'Dotify Tasks API'
+                description 'Streamline API'
                 url "$repositoryURL"
                 scm {
                     connection "$repositorySCM"
