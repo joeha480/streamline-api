@@ -1,14 +1,9 @@
 -buildpath: biz.aQute.bnd.annotation
 Export-Package:  \
-	org.daisy.dotify.api.config,\
-	org.daisy.dotify.api.identity,\
-	org.daisy.dotify.api.tasks,\
-	org.daisy.dotify.api.validity
-Private-Package:  \
-	org.daisy.dotify.consumer.config,\
-	org.daisy.dotify.consumer.identity,\
-	org.daisy.dotify.consumer.tasks,\
-	org.daisy.dotify.consumer.validity
+	org.daisy.streamline.api.config,\
+	org.daisy.streamline.api.identity,\
+	org.daisy.streamline.api.tasks,\
+	org.daisy.streamline.api.validity
 Include-Resource: / = src/
 -sources: false
 Service-Component: *
