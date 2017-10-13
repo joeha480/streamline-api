@@ -1,6 +1,6 @@
 package org.daisy.streamline.api.identity;
 
-import org.daisy.streamline.api.tasks.FileDetails;
+import org.daisy.streamline.api.media.FileDetails;
 
 /**
  * Provides a factory for identifiers.

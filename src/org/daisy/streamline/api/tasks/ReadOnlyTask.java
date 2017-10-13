@@ -2,6 +2,8 @@ package org.daisy.streamline.api.tasks;
 
 import java.io.File;
 
+import org.daisy.streamline.api.media.AnnotatedFile;
+
 /**
  * Provides an abstract base for read only tasks. A read only task is 
  * a task that does not produce an altered output.

@@ -3,6 +3,8 @@ package org.daisy.streamline.api.tasks;
 import java.io.File;
 import java.util.List;
 
+import org.daisy.streamline.api.media.AnnotatedFile;
+
 /**
  * Provides an abstract base for expanding tasks. 
  * 

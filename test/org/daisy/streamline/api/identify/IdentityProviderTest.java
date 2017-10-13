@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.daisy.streamline.api.identity.IdentityProvider;
 import org.daisy.streamline.api.identity.IdentityProviderService;
-import org.daisy.streamline.api.tasks.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedFile;
 import org.junit.Ignore;
 import org.junit.Test;
 @SuppressWarnings("javadoc")

@@ -1,6 +1,6 @@
 package org.daisy.streamline.api.identity;
 
-import org.daisy.streamline.api.tasks.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedFile;
 
 
 /**

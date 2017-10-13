@@ -2,7 +2,7 @@ package org.daisy.streamline.api.identity;
 
 import java.io.File;
 
-import org.daisy.streamline.api.tasks.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedFile;
 
 /**
  * <p>

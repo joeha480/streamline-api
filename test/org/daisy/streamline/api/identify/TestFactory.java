@@ -3,9 +3,9 @@ package org.daisy.streamline.api.identify;
 import org.daisy.streamline.api.identity.IdentificationFailedException;
 import org.daisy.streamline.api.identity.Identifier;
 import org.daisy.streamline.api.identity.IdentifierFactory;
-import org.daisy.streamline.api.tasks.AnnotatedFile;
-import org.daisy.streamline.api.tasks.DefaultAnnotatedFile;
-import org.daisy.streamline.api.tasks.FileDetails;
+import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.DefaultAnnotatedFile;
+import org.daisy.streamline.api.media.FileDetails;
 
 @SuppressWarnings("javadoc")
 public class TestFactory implements IdentifierFactory {
