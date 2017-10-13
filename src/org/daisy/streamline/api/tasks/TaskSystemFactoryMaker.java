@@ -94,13 +94,17 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 			throws TaskSystemFactoryException {
 		String key = toKey(inputFormat, outputFormat, locale);
 		TaskSystemFactory template = map.get(key);
+		Integer matchedPriority = null;
 		if (template==null) {
 			for (TaskSystemFactory h : filters) {
 				if (h.supportsSpecification(inputFormat, outputFormat, locale)) {
-					logger.fine("Found a factory for " + locale + " (" + h.getClass() + ")");
-					map.put(key, h);
-					template = h;
-					break;
+					int currentPriority = h.getPriority();
+					if (matchedPriority==null || matchedPriority<currentPriority) {
+						matchedPriority = currentPriority;
+						logger.fine("Found a factory for " + locale + " (" + h.getClass() + ")");
+						map.put(key, h);
+						template = h;
+					}
 				}
 			}
 		}

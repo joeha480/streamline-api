@@ -29,6 +29,15 @@ public interface TaskSystemFactory {
 	 */
 	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
 
+
+	/**
+	 * Returns the priority when choosing between several matching task systems.
+	 * @return returns the priority.
+	 */
+	public default int getPriority() {
+		return 0;
+	}
+
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using
 	 * information collected from a file within the <tt>META-INF/services</tt> directory.
