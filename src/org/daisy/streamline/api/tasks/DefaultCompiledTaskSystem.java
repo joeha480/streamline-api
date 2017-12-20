@@ -3,6 +3,8 @@ package org.daisy.streamline.api.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.daisy.streamline.api.option.TaskOption;
+
 /**
  * Provides a default implementation of a compiled task system
  * @author Joel Håkansson

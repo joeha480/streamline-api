@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.daisy.streamline.api.option.TaskOption;
+
 
 /**
  * a task group is a file/fileset conversion unit. An implementation

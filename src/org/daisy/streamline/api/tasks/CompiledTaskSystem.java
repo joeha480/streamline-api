@@ -2,6 +2,8 @@ package org.daisy.streamline.api.tasks;
 
 import java.util.List;
 
+import org.daisy.streamline.api.option.TaskOption;
+
 /**
  * Provides a compiled task system, which provides the tasks to 
  * execute as well as its name and relevant options.

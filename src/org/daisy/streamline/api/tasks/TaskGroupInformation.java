@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.daisy.streamline.api.option.TaskOption;
+
 /**
  * Provides information about a task group. This information acts as an
  * aid in the process of selecting an implementation, but also as the 

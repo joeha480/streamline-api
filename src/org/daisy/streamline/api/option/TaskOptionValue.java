@@ -1,4 +1,4 @@
-package org.daisy.streamline.api.tasks;
+package org.daisy.streamline.api.option;
 
 /**
  * Provides a value and the description of that value, to be used

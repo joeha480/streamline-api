@@ -1,4 +1,4 @@
-package org.daisy.streamline.api.tasks;
+package org.daisy.streamline.api.option;
 
 import java.util.ArrayList;
 import java.util.Arrays;

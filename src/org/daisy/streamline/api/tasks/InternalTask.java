@@ -3,6 +3,8 @@ package org.daisy.streamline.api.tasks;
 import java.util.Collections;
 import java.util.List;
 
+import org.daisy.streamline.api.option.TaskOption;
+
 /**
  * <p>Base class for internal tasks. This class is only
  * intended to be extended by classes in this package. Refer to the 
