@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Provides a task option.
+ * Provides a user option.
  * @author Joel Håkansson
  *
  */
-public final class TaskOption {
-	private final List<TaskOptionValue> values;
+public final class UserOption {
+	private final List<UserOptionValue> values;
 	private final String 	key,
 							description,
 							defaultValue;
@@ -21,13 +21,13 @@ public final class TaskOption {
 	private Set<String> valuesSet = null;
 	
 	/**
-	 * Creates a task option builder.
+	 * Creates a user option builder.
 	 */
 	public static class Builder {
 		private final String key;
 		private String description = "";
 		private String defaultValue = "";
-		private List<TaskOptionValue> values;
+		private List<UserOptionValue> values;
 		
 		/**
 		 * Creates a new builder with the specified name.
@@ -35,7 +35,7 @@ public final class TaskOption {
 		 */
 		public Builder(String key) {
 			this.key = key;
-			this.values = new ArrayList<TaskOptionValue>();
+			this.values = new ArrayList<UserOptionValue>();
 		}
 		
 		/**
@@ -65,35 +65,35 @@ public final class TaskOption {
 		 * @param value the value
 		 * @return returns this builder
 		 */
-		public Builder addValue(TaskOptionValue value) {
+		public Builder addValue(UserOptionValue value) {
 			values.add(value);
 			return this;
 		}
 		
 		/**
-		 * Creates a new task option based on the current state of the builder.
-		 * @return returns a new task option
+		 * Creates a new user option based on the current state of the builder.
+		 * @return returns a new user option
 		 */
-		public TaskOption build() {
-			return new TaskOption(this);
+		public UserOption build() {
+			return new UserOption(this);
 		}
 	}
 	
 	/**
-	 * Creates a new task option with the specified key.
+	 * Creates a new user option with the specified key.
 	 * @param key the key
 	 * @return returns a new builder
 	 */
-	public static TaskOption.Builder withKey(String key) {
-		return new TaskOption.Builder(key);
+	public static UserOption.Builder withKey(String key) {
+		return new UserOption.Builder(key);
 	}
 
-	private TaskOption(Builder builder) {
+	private UserOption(Builder builder) {
 		this.key = builder.key;
 		this.description = builder.description;
 		this.defaultValue = builder.defaultValue;
 		if (builder.values.size()>0) {
-			TaskOptionValue[] v = builder.values.toArray(new TaskOptionValue[builder.values.size()]);
+			UserOptionValue[] v = builder.values.toArray(new UserOptionValue[builder.values.size()]);
 			this.values = Collections.unmodifiableList(Arrays.asList(v));
 		} else {
 			this.values = null;
@@ -137,7 +137,7 @@ public final class TaskOption {
 	 * @return returns the list of acceptable values, or null if the list of possible values 
 	 * is infinite
 	 */
-	public List<TaskOptionValue> getValues() {
+	public List<UserOptionValue> getValues() {
 		return values;
 	}
 	
@@ -159,7 +159,7 @@ public final class TaskOption {
 	private Set<String> getValuesList() {
 		if (hasValues() && valuesSet==null) {
 			valuesSet = new HashSet<>();
-			for (TaskOptionValue val : getValues()) {
+			for (UserOptionValue val : getValues()) {
 				valuesSet.add(val.getName());
 			}
 		}
@@ -185,7 +185,7 @@ public final class TaskOption {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TaskOption other = (TaskOption) obj;
+		UserOption other = (UserOption) obj;
 		if (key == null) {
 			if (other.key != null) {
 				return false;

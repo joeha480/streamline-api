@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 /**
  * Provides information about a task group. This information acts as an
@@ -24,7 +24,7 @@ public class TaskGroupInformation {
 	private final String output;
 	private final String locale;
 	private final TaskGroupActivity type;
-	private final List<TaskOption> keys;
+	private final List<UserOption> keys;
 	
 	/**
 	 * Provides a builder for task group information
@@ -35,7 +35,7 @@ public class TaskGroupInformation {
 		private final TaskGroupActivity type;
 		// optional
 		private String locale = null; 
-		private List<TaskOption> keys = null;
+		private List<UserOption> keys = null;
 
 		/**
 		 * Creates a new builder with the specified options
@@ -81,7 +81,7 @@ public class TaskGroupInformation {
 		 * @param keys the required options
 		 * @return returns this builder
 		 */
-		public Builder setRequiredOptions(List<TaskOption> keys) {
+		public Builder setRequiredOptions(List<UserOption> keys) {
 			this.keys = keys;
 			return this;
 		}
@@ -179,7 +179,7 @@ public class TaskGroupInformation {
 	 * Returns a collection of options that <b>must</b> be provided when compiling the task group.
 	 * @return returns the collection of options that must be provided
 	 */
-	public Collection<TaskOption> getRequiredOptions() {
+	public Collection<UserOption> getRequiredOptions() {
 		return keys;
 	}
 	

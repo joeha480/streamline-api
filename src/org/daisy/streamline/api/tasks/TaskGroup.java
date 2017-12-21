@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 
 /**
@@ -30,7 +30,7 @@ public interface TaskGroup {
 	 * Gets a list of parameters applicable to this instance
 	 * @return returns a list of parameters
 	 */
-	public default List<TaskOption> getOptions() {
+	public default List<UserOption> getOptions() {
 		return Collections.emptyList();
 	}
 

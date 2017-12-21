@@ -3,7 +3,7 @@ package org.daisy.streamline.api.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 /**
  * Provides a default implementation of a compiled task system
@@ -15,7 +15,7 @@ public class DefaultCompiledTaskSystem extends ArrayList<InternalTask> implement
 	 * 
 	 */
 	private static final long serialVersionUID = -5627095028137227428L;
-	private List<TaskOption> options;
+	private List<UserOption> options;
 	private final String name;
 	
 	/**
@@ -23,7 +23,7 @@ public class DefaultCompiledTaskSystem extends ArrayList<InternalTask> implement
 	 * @param name the name of the task system
 	 */
 	public DefaultCompiledTaskSystem(String name) {
-		this(name, new ArrayList<TaskOption>());
+		this(name, new ArrayList<UserOption>());
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class DefaultCompiledTaskSystem extends ArrayList<InternalTask> implement
 	 * @param name the name of the task system
 	 * @param options the options
 	 */
-	public DefaultCompiledTaskSystem(String name, List<TaskOption> options) {
+	public DefaultCompiledTaskSystem(String name, List<UserOption> options) {
 		super();
 		this.options = new ArrayList<>(options);
 		this.name = name;
@@ -41,12 +41,12 @@ public class DefaultCompiledTaskSystem extends ArrayList<InternalTask> implement
 	 * Adds an option to the list of options
 	 * @param option the option to add
 	 */
-	public void addOption(TaskOption option) {
+	public void addOption(UserOption option) {
 		options.add(option);
 	}
 
 	@Override
-	public List<TaskOption> getOptions() {
+	public List<UserOption> getOptions() {
 		return options;
 	}
 

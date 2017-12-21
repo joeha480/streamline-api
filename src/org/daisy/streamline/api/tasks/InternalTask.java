@@ -3,7 +3,7 @@ package org.daisy.streamline.api.tasks;
 import java.util.Collections;
 import java.util.List;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 /**
  * <p>Base class for internal tasks. This class is only
@@ -38,7 +38,7 @@ public class InternalTask {
 	 * Gets a list of parameters applicable to this instance
 	 * @return returns a list of parameters
 	 */
-	public List<TaskOption> getOptions() {
+	public List<UserOption> getOptions() {
 		return Collections.emptyList();
 	}
 

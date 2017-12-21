@@ -2,17 +2,17 @@ package org.daisy.streamline.api.option;
 
 /**
  * Provides a value and the description of that value, to be used
- * in a finite list of acceptable values for a task option.
+ * in a finite list of acceptable values for a user option.
  * 
  * @author Joel Håkansson
  *
  */
-public final class TaskOptionValue {
+public final class UserOptionValue {
 	private final String 	name,
 							description;
 	
 	/**
-	 * Provides a task option value builder.
+	 * Provides a user option value builder.
 	 */
 	public static class Builder {
 		private final String name;
@@ -37,25 +37,25 @@ public final class TaskOptionValue {
 		}
 		
 		/**
-		 * Creates a new task option value based on the current state of the builder.
-		 * @return returns a new task option value
+		 * Creates a new user option value based on the current state of the builder.
+		 * @return returns a new user option value
 		 */
-		public TaskOptionValue build() {
-			return new TaskOptionValue(this);
+		public UserOptionValue build() {
+			return new UserOptionValue(this);
 		}
 	}
 	
 	/**
-	 * Creates a new task option value with the specified
+	 * Creates a new user option value with the specified
 	 * name.
 	 * @param name the name of the value
 	 * @return returns a new builder
 	 */
-	public static TaskOptionValue.Builder withName(String name) {
-		return new TaskOptionValue.Builder(name);
+	public static UserOptionValue.Builder withName(String name) {
+		return new UserOptionValue.Builder(name);
 	}
 
-	private TaskOptionValue(Builder builder) {
+	private UserOptionValue(Builder builder) {
 		this.name = builder.name;
 		this.description = builder.description;
 	}
@@ -97,7 +97,7 @@ public final class TaskOptionValue {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		TaskOptionValue other = (TaskOptionValue) obj;
+		UserOptionValue other = (UserOptionValue) obj;
 		if (name == null) {
 			if (other.name != null) {
 				return false;

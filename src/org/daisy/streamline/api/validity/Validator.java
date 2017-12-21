@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 /**
  * Provides an interface for validators
@@ -34,7 +34,7 @@ public interface Validator {
 	 * Gets a list of parameters applicable to this instance
 	 * @return returns a list of parameters
 	 */
-	public default List<TaskOption> listOptions() {
+	public default List<UserOption> listOptions() {
 		return Collections.emptyList();
 	}
 

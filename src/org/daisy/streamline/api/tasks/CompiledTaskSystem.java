@@ -2,7 +2,7 @@ package org.daisy.streamline.api.tasks;
 
 import java.util.List;
 
-import org.daisy.streamline.api.option.TaskOption;
+import org.daisy.streamline.api.option.UserOption;
 
 /**
  * Provides a compiled task system, which provides the tasks to 
@@ -22,6 +22,6 @@ public interface CompiledTaskSystem extends List<InternalTask> {
 	 * Gets a list of options for the task system
 	 * @return returns a list of options
 	 */
-	public List<TaskOption> getOptions();
+	public List<UserOption> getOptions();
 
 }
