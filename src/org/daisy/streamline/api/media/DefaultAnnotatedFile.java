@@ -3,6 +3,7 @@ package org.daisy.streamline.api.media;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -159,6 +160,18 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	}
 	
 	/**
+	 * Creates a new builder with the specified file as its file.
+	 * Note that the extension and media type is <b>NOT</b> set
+	 * from the supplied file.
+	 * 
+	 * @param f the file
+	 * @return returns a new builder
+	 */
+	public static Builder with(Path f) {
+		return new Builder(f.toFile());
+	}
+	
+	/**
 	 * Creates a new builder with the same details as the supplied file.
 	 * @param f the file
 	 * @return returns a new builder
@@ -196,6 +209,11 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	@Override
 	public File getFile() {
 		return f;
+	}
+
+	@Override
+	public Path getPath() {
+		return f.toPath();
 	}
 	
 	@Override

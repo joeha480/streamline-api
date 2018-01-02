@@ -3,6 +3,7 @@ package org.daisy.streamline.api.tasks;
 import java.io.File;
 
 import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.FileSet;
 
 /**
  * Provides an abstract base for read only tasks. A read only task is 
@@ -29,11 +30,20 @@ public abstract class ReadOnlyTask extends InternalTask { //NOPMD
 	public abstract void execute(File input) throws InternalTaskException;
 	
 	/**
-	 * 
+	 * Apply the task to <code>input</code>
 	 * @param input input file
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong
 	 */
 	public abstract void execute(AnnotatedFile input) throws InternalTaskException;
+	
+	/**
+	 * Apply the task to <code>input</code>
+	 * @param input input file set
+	 * @throws InternalTaskException throws InternalTaskException if something goes wrong
+	 */
+	public void execute(FileSet input) throws InternalTaskException {
+		execute(input.getManifest());
+	}
 	
 	@Override
 	public final Type getType() {
