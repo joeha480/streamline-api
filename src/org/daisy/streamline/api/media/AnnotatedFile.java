@@ -1,6 +1,7 @@
 package org.daisy.streamline.api.media;
 
 import java.io.File;
+import java.nio.file.Path;
 
 
 /**
@@ -14,5 +15,7 @@ public interface AnnotatedFile extends FileDetails {
 	 * @return the file
 	 */
 	public File getFile();
+	
+	public Path getPath();
 
 }

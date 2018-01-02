@@ -1,0 +1,2 @@
+../b/resource1.txt
+../b/c/resource2.txt
