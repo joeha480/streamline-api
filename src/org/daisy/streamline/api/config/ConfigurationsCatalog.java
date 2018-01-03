@@ -49,7 +49,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 	 * 
 	 * <p>
 	 * In an OSGi context, an instance should be retrieved using the service
-	 * registry. It will be registered under the PaperCatalogService
+	 * registry. It will be registered under the ConfigurationsCatalogService
 	 * interface.
 	 * </p>
 	 * 
