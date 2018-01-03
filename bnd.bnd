@@ -6,6 +6,5 @@ Export-Package:  \
 	org.daisy.streamline.api.option,\
 	org.daisy.streamline.api.tasks,\
 	org.daisy.streamline.api.validity
-Include-Resource: / = src/
--sources: false
+-sources: true
 Service-Component: *
