@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Provides a user option.
+ * Provides a user option. A user option is primarily intended to be 
+ * set by a user.
  * @author Joel Håkansson
  *
  */
