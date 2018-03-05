@@ -12,8 +12,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * Simple factory for instantiating a Validator based on one of its identifiers.
@@ -58,7 +60,7 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 	}
 
 	@SuppressWarnings("javadoc")
-	@Reference(type = '*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	public void addFactory(ValidatorFactory factory) {
 		synchronized (map) {
 			verifyMapIntegrity();
