@@ -20,25 +20,24 @@ import java.util.stream.Collectors;
  * remove configurations. The collection data is stored in the users
  * home directory.
  */
-final class CustomConfigurationCollection implements UserConfigurationsProvider {
-	private static final Logger logger = Logger.getLogger(CustomConfigurationCollection.class.getCanonicalName());
+public final class UserConfigurationsCollection {
+	private static final Logger logger = Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName());
 	private static final String MASTER_FILE_NAME = "catalog.ser";
 	private static final String CONFIG_EXT = ".ser";
 	private final File configDir;
-	private final Lock lock;
+	private final SingletonAccess lock;
 	private final File catalog;
 
 	private Inventory inventory;
 	private Date sync;
 
-	// Allows instantiation for testing. All real access should go through getInstance()
-	CustomConfigurationCollection(File configDir) {
+	public UserConfigurationsCollection(File configDir, SingletonAccess lock) {
 		this.inventory = new Inventory();
 		this.sync = null;
 		this.configDir = configDir;
 		if (this.configDir!=null) {
 			configDir.mkdirs();
-			this.lock = new Lock(new File(configDir, "lock"));
+			this.lock = lock;
 			this.catalog = new File(configDir, MASTER_FILE_NAME);
 		} else {
 			this.lock = null;
@@ -48,37 +47,11 @@ final class CustomConfigurationCollection implements UserConfigurationsProvider 
 			try {
 				sync(this::cleanupInventory);
 			} catch (IOException e) {
-				Logger.getLogger(CustomConfigurationCollection.class.getCanonicalName()).log(Level.WARNING, "Failed to read custom configurations.", e);
+				Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName()).log(Level.WARNING, "Failed to read custom configurations.", e);
 			}
 		}
 	}
 
-	private enum InstanceManager {
-		GET(new CustomConfigurationCollection(getConfigDir()));
-		private final CustomConfigurationCollection collection;
-		private InstanceManager(CustomConfigurationCollection collection) {
-			this.collection = collection;
-		}
-		
-		private static File getConfigDir() {
-			try {
-				return new File(new File(new File(System.getProperty("user.home"), ".streamline"), "data"), "config");
-			} catch (Exception e) {
-				// silently fail here
-				return null;
-			}
-		}
-	}
-
-	/**
-	 * Gets the instance.
-	 * @return returns the instance
-	 */
-	static CustomConfigurationCollection getInstance() {
-		return InstanceManager.GET.collection;
-	}
-
-	@Override
 	public synchronized Set<ConfigurationDetails> getConfigurationDetails() {
 		return inventory.entries().stream()
 				.map(c->c.getConfiguration().orElse(null))
@@ -86,8 +59,7 @@ final class CustomConfigurationCollection implements UserConfigurationsProvider 
 				.map(v->v.getDetails())
 				.collect(Collectors.toSet());
 	}
-	
-	@Override
+
 	public synchronized Map<String, Object> getConfiguration(String key) throws ConfigurationsProviderException {
 		return Optional.ofNullable(inventory.get(key))
 				.flatMap(v->v.getConfiguration())
@@ -95,7 +67,6 @@ final class CustomConfigurationCollection implements UserConfigurationsProvider 
 				.orElse(null);
 	}
 
-	@Override
 	public synchronized Optional<String> addConfiguration(String niceName, String description, Map<String, Object> config) {
 		try {
 			if (catalog==null) {
@@ -120,7 +91,6 @@ final class CustomConfigurationCollection implements UserConfigurationsProvider 
 		}
 	}
 	
-	@Override
 	public synchronized boolean removeConfiguration(String key) {
 		try {
 			if (catalog==null) {
@@ -133,7 +103,6 @@ final class CustomConfigurationCollection implements UserConfigurationsProvider 
 		}
 	}
 	
-	@Override
 	public synchronized boolean containsConfiguration(String key) {
 		return inventory.keys().contains(key);
 	}

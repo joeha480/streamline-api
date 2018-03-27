@@ -7,11 +7,19 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class CustomConfigurationCollectionTest {
+public class UserConfigurationsCollectionTest {
 
 	@Test
 	public void test() throws IOException {
-		CustomConfigurationCollection c = new CustomConfigurationCollection(new File(new File("build"), this.getClass().getName()));
+		UserConfigurationsCollection c = new UserConfigurationsCollection(new File(new File("build"), this.getClass().getName()), new SingletonAccess(){
+			@Override
+			public boolean acquireLock() throws IOException {
+				return true;
+			}
+
+			@Override
+			public void releaseLock() {
+			}});
 		System.out.println("-- BEFORE --");
 		c.getConfigurationDetails().stream().map(v->v.getKey()).forEach(System.out::println);
 		Map<String, Object> t = new HashMap<>();
