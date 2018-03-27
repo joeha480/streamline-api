@@ -1,5 +1,6 @@
 package org.daisy.streamline.api.config;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,11 @@ import java.util.Objects;
  * they have the same key.
  * @author Joel Håkansson
  */
-public class ConfigurationDetails {
+public class ConfigurationDetails implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6169245964235216805L;
 	private final String key;
 	private final String description;
 	private final String niceName;
@@ -18,9 +23,9 @@ public class ConfigurationDetails {
 	 * @author Joel Håkansson
 	 */
 	public static class Builder {
-		private final String key;
+		private String key = "";
 		private String description = "";
-		private String niceName;
+		private String niceName = "";
 
 		/**
 		 * Creates a new builder with the specified identifier.
@@ -31,6 +36,27 @@ public class ConfigurationDetails {
 			Objects.requireNonNull(key);
 			this.key = key;
 			this.niceName = key;
+		}
+		
+		/**
+		 * Creates a new builder with the specified details as a template.
+		 * @param template the template
+		 */
+		public Builder(ConfigurationDetails template) {
+			this.key = template.key;
+			this.description = template.description;
+			this.niceName = template.niceName;
+		}
+		
+		/**
+		 * Sets the identifier
+		 * @param value the identifier
+		 * @return returns this builder
+		 */
+		public Builder identifier(String value) {
+			Objects.requireNonNull(value);
+			this.key = value;
+			return this;
 		}
 		
 		/**
@@ -69,7 +95,14 @@ public class ConfigurationDetails {
 		this.description = builder.description;
 		this.niceName = builder.niceName;
 	}
-
+	
+	/**
+	 * Creates a new builder based on this instance.
+	 * @return returns a new builder
+	 */
+	public ConfigurationDetails.Builder builder() {
+		return new Builder(this);
+	}
 
 	/**
 	 * Gets the key for this configuration.

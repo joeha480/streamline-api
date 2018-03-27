@@ -34,5 +34,37 @@ public interface ConfigurationsCatalogService {
 	 * @throws ConfigurationsProviderException if identifier is unknown.
 	 */
 	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException;
+	
+	/**
+	 * Returns true if user configurations are supported, false otherwise. If this method
+	 * returns false, {@link #addConfiguration(String, String, Map)}, {@link #isRemovable(String)},
+	 * {@link #removeConfiguration(String)} should not be used.
+	 * 
+	 * @return true if user configurations are supported, false otherwise
+	 */
+	public boolean supportsUserConfigurations();
+	
+	/**
+	 * Adds a configuration to this catalog.
+	 * @param niceName the display name
+	 * @param description the configuration description
+	 * @param config the configuration details
+	 * @return true if the configuration was successfully added, false otherwise
+	 */
+	public boolean addConfiguration(String niceName, String description, Map<String, Object> config);
+	
+	/**
+	 * Returns true if the configuration with the specified identifier can be removed.
+	 * @param identifier the identifier
+	 * @return true if the configuration can be removed, false otherwise
+	 */
+	public boolean isRemovable(String identifier);
+	
+	/**
+	 * Removes the configuration with the specified identifier.
+	 * @param identifier the identifier
+	 * @return true if the configuration was successfully removed, false otherwise
+	 */
+	public boolean removeConfiguration(String identifier);
 
 }
