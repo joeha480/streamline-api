@@ -3,8 +3,10 @@ package org.daisy.streamline.api.config;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,6 +36,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 	private static final Logger logger = Logger.getLogger(ConfigurationsCatalog.class.getCanonicalName());
 	private final Map<String, ConfigurationsProvider> map;
 	private final List<ConfigurationsProvider> providers;
+	private Optional<UserConfigurationsProvider> userConfigurations;
 	
 	/**
 	 * Creates a new empty instance. This method is public because it is required by OSGi.
@@ -42,6 +45,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 	public ConfigurationsCatalog() {
 		this.map = Collections.synchronizedMap(new HashMap<String, ConfigurationsProvider>());
 		providers = new CopyOnWriteArrayList<>();
+		this.userConfigurations = Optional.empty();
 	}
 
 	/**
@@ -62,6 +66,12 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 		for (ConfigurationsProvider provider : ServiceLoader.load(ConfigurationsProvider.class)) {
 			provider.setCreatedWithSPI();
 			ret.addFactory(provider);
+		}
+		Iterator<UserConfigurationsProvider> iter = ServiceLoader.load(UserConfigurationsProvider.class).iterator();
+		if (iter.hasNext()) {
+			UserConfigurationsProvider provider = iter.next();
+			provider.setCreatedWithSPI();
+			ret.setUserConfigurations(provider);
 		}
 		return ret;
 	}
@@ -95,7 +105,17 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 		}
 	}
 	
-
+	@Reference(cardinality=ReferenceCardinality.OPTIONAL, policy=ReferencePolicy.DYNAMIC)
+	public void setUserConfigurations(UserConfigurationsProvider provider) {
+		this.userConfigurations = Optional.of(provider);
+	}
+	
+	// Unset reference added automatically from setUserConfigurations annotation
+	public void unsetUserConfigurations(UserConfigurationsProvider provider) {
+		if (userConfigurations.isPresent() && userConfigurations.get().equals(provider)) {
+			this.userConfigurations = Optional.empty();
+		}
+	}
 
 	@Override
 	public Set<ConfigurationDetails> getConfigurationDetails() {
@@ -103,6 +123,7 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 		for (ConfigurationsProvider p : providers) {
 			keys.addAll(p.getConfigurationDetails());
 		}
+		userConfigurations.ifPresent(v->keys.addAll(v.getConfigurationDetails()));
 		return keys;
 	}
 	
@@ -138,12 +159,38 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 
 	@Override
 	public Map<String, Object> getConfiguration(String identifier) throws ConfigurationsProviderException {
+		if (userConfigurations.isPresent()) {
+			Map<String, Object> c = userConfigurations.get().getConfiguration(identifier);
+			if (c!=null) {
+				return c;
+			}
+		}
 		ConfigurationsProvider provider = assertProvider(identifier);
 		if (provider!=null) {
 			return provider.getConfiguration(identifier);
 		} else {
 			throw new ConfigurationsProviderException("Failed to locate resource with identifier: " + identifier);
 		}
+	}
+	
+	@Override
+	public boolean supportsUserConfigurations() {
+		return userConfigurations.isPresent();
+	}
+
+	@Override
+	public boolean addConfiguration(String niceName, String description, Map<String, Object> config) {
+		return userConfigurations.flatMap(v->v.addConfiguration(niceName, description, config)).map(v2->true).orElse(false);
+	}
+	
+	@Override
+	public boolean removeConfiguration(String identifier) {
+		return userConfigurations.map(v->v.removeConfiguration(identifier)).orElse(false);
+	}
+
+	@Override
+	public boolean isRemovable(String identifier) {
+		return userConfigurations.map(v->v.containsConfiguration(identifier)).orElse(false);
 	}
 
 }
