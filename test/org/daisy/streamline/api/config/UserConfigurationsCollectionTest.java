@@ -11,14 +11,14 @@ public class UserConfigurationsCollectionTest {
 
 	@Test
 	public void test() throws IOException {
-		UserConfigurationsCollection c = new UserConfigurationsCollection(new File(new File("build"), this.getClass().getName()), new SingletonAccess(){
+		UserConfigurationsCollection c = new UserConfigurationsCollection(new File(new File("build"), this.getClass().getName()), new ExclusiveAccess(){
 			@Override
-			public boolean acquireLock() throws IOException {
+			public boolean acquire() {
 				return true;
 			}
 
 			@Override
-			public void releaseLock() {
+			public void release() {
 			}});
 		System.out.println("-- BEFORE --");
 		c.getConfigurationDetails().stream().map(v->v.getKey()).forEach(System.out::println);

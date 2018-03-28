@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;
 
-public final class InventoryEntry implements Serializable {
+final class InventoryEntry implements Serializable {
 	/**
 	 * 
 	 */
@@ -25,19 +25,19 @@ public final class InventoryEntry implements Serializable {
 		this.config = null;
 	}
 
-	public File getPath() {
+	File getPath() {
 		return path;
 	}
 
-	public String getIdentifier() {
+	String getIdentifier() {
 		return identifier;
 	}
 
-	public long getModified() {
+	long getModified() {
 		return modified;
 	}
 	
-	public Optional<Configuration> getConfiguration() {
+	Optional<Configuration> getConfiguration() {
 		if (config==null) {
 			try {
 				config = Optional.of(Configuration.read(path));

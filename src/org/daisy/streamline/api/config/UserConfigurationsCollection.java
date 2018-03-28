@@ -17,28 +17,32 @@ import java.util.stream.Collectors;
 
 /**
  * Provides a custom configuration collection that lets a user add and
- * remove configurations. The collection data is stored in the users
- * home directory.
+ * remove configurations.
  */
 public final class UserConfigurationsCollection {
 	private static final Logger logger = Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName());
 	private static final String MASTER_FILE_NAME = "catalog.ser";
 	private static final String CONFIG_EXT = ".ser";
-	private final File configDir;
-	private final SingletonAccess lock;
+	private final File baseDir;
+	private final ExclusiveAccess lock;
 	private final File catalog;
 
 	private Inventory inventory;
 	private Date sync;
 
-	public UserConfigurationsCollection(File configDir, SingletonAccess lock) {
+	/**
+	 * Creates a new configurations collection. 
+	 * @param baseDir the folder to store the configurations
+	 * @param lock a lock
+	 */
+	public UserConfigurationsCollection(File baseDir, ExclusiveAccess lock) {
 		this.inventory = new Inventory();
 		this.sync = null;
-		this.configDir = configDir;
-		if (this.configDir!=null) {
-			configDir.mkdirs();
+		this.baseDir = baseDir;
+		if (this.baseDir!=null) {
+			baseDir.mkdirs();
 			this.lock = lock;
-			this.catalog = new File(configDir, MASTER_FILE_NAME);
+			this.catalog = new File(baseDir, MASTER_FILE_NAME);
 		} else {
 			this.lock = null;
 			this.catalog = null;
@@ -108,7 +112,7 @@ public final class UserConfigurationsCollection {
 	}
 	
 	private InventoryEntry createEntry(Configuration c) throws IOException {
-		File f = File.createTempFile("config-", CONFIG_EXT, configDir);
+		File f = File.createTempFile("config-", CONFIG_EXT, baseDir);
 		c.write(f);
 		InventoryEntry ret = new InventoryEntry(f, c.getDetails().getKey(), f.lastModified());
 		// Manually set the configuration to avoid re-reading it from file
@@ -153,7 +157,7 @@ public final class UserConfigurationsCollection {
 				return null;
 			}
 		} finally {
-			lock.releaseLock();
+			lock.release();
 		}
 	}
 	
@@ -202,7 +206,7 @@ public final class UserConfigurationsCollection {
 	private boolean importConfigurations() {
 		// Create a set of files in the inventory
 		Set<File> files = inventory.entries().stream().map(v->v.getPath()).collect(Collectors.toSet());
-		List<File> entriesToImport = Arrays.asList(configDir.listFiles(f->
+		List<File> entriesToImport = Arrays.asList(baseDir.listFiles(f->
 			f.isFile()
 			&& !f.equals(catalog)	// Exclude the master catalog (should it have the same extension as entries)
 			&& f.getName().endsWith(CONFIG_EXT)
@@ -225,7 +229,7 @@ public final class UserConfigurationsCollection {
 		// Acquire lock
 		int i = 0;
 		boolean locked = false;
-		while (!(locked = lock.acquireLock()) && i<20) {
+		while (!(locked = lock.acquire()) && i<20) {
 			i++;
 			try {
 				//Sleep between 50-150 ms
