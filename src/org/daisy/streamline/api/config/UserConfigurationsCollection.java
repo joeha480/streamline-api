@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -16,8 +17,25 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * Provides a custom configuration collection that lets a user add and
- * remove configurations.
+ * <p>Provides a user configuration collection that lets a user add and
+ * remove configurations at runtime. This class is not intended for direct
+ * use. The intended use is as part of a {@link UserConfigurationsProvider}
+ * implementation. By implementing the {@link UserConfigurationsProvider}, 
+ * the configurations will be available through the {@link ConfigurationsCatalogService}
+ * API.</p>
+ * 
+ * <p>This class has all the methods of the 
+ * {@link UserConfigurationsProvider} interface but doesn't
+ * <code>implements</code> it. This is intentional. For example, this class lacks
+ * a constructor without arguments, which is required for service discovery using
+ * both SPI and OSGi. This class has also been made final to prohibit a 
+ * {@link UserConfigurationsProvider} implementation from extending it.</p>
+ * 
+ * <p>Note: this class is not connected directly to the {@link ConfigurationsCatalog}
+ * because of restrictions imposed by the API design guidelines. To solve the problem,
+ * the {@link ExclusiveAccess} interface was created (an implementation of this
+ * interface would have been too generic to be a public part of this API but to useful
+ * to keep private).</p>
  */
 public final class UserConfigurationsCollection {
 	private static final Logger logger = Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName());
@@ -33,26 +51,20 @@ public final class UserConfigurationsCollection {
 	/**
 	 * Creates a new configurations collection. 
 	 * @param baseDir the folder to store the configurations
-	 * @param lock a lock
+	 * @param lock an exclusive lock, see this interface for more information
+	 * @throws NullPointerException if <code>baseDir</code> is null
 	 */
 	public UserConfigurationsCollection(File baseDir, ExclusiveAccess lock) {
 		this.inventory = new Inventory();
 		this.sync = null;
-		this.baseDir = baseDir;
-		if (this.baseDir!=null) {
-			baseDir.mkdirs();
-			this.lock = lock;
-			this.catalog = new File(baseDir, MASTER_FILE_NAME);
-		} else {
-			this.lock = null;
-			this.catalog = null;
-		}
-		if (this.catalog!=null) {
-			try {
-				sync(this::cleanupInventory);
-			} catch (IOException e) {
-				Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName()).log(Level.WARNING, "Failed to read custom configurations.", e);
-			}
+		this.baseDir = Objects.requireNonNull(baseDir);
+		baseDir.mkdirs();
+		this.lock = lock;
+		this.catalog = new File(baseDir, MASTER_FILE_NAME);
+		try {
+			sync(this::cleanupInventory);
+		} catch (IOException e) {
+			Logger.getLogger(UserConfigurationsCollection.class.getCanonicalName()).log(Level.WARNING, "Failed to read custom configurations.", e);
 		}
 	}
 
