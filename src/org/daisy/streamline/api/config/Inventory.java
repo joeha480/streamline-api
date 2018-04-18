@@ -88,7 +88,7 @@ final class Inventory implements Serializable {
 
 	synchronized String nextIdentifier() {
 		index++;
-		return UserConfigurationsCollection.class.getCanonicalName()+"_"+index;
+		return this.getClass().getCanonicalName()+"_"+index;
 	}
 
 	/**
