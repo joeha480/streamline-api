@@ -90,9 +90,9 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 		return new StringBuilder().
 				append(spec.getLocale()).
 				append(" (").
-				append(spec.getInputFormat()).
+				append(spec.getInputType()).
 				append(" -> ").
-				append(spec.getOutputFormat()).
+				append(spec.getOutputType()).
 				append(")").toString();
 	}
 	

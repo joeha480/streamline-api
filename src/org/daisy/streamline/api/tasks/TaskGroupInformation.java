@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.daisy.streamline.api.media.FormatIdentifier;
 import org.daisy.streamline.api.option.UserOption;
 
 /**
@@ -20,8 +21,8 @@ import org.daisy.streamline.api.option.UserOption;
  */
 public class TaskGroupInformation {
 
-	private final String input;
-	private final String output;
+	private final FormatIdentifier input;
+	private final FormatIdentifier output;
 	private final String locale;
 	private final TaskGroupActivity type;
 	private final List<UserOption> keys;
@@ -30,8 +31,8 @@ public class TaskGroupInformation {
 	 * Provides a builder for task group information
 	 */
 	public static class Builder {
-		private final String input;
-		private final String output;
+		private final FormatIdentifier input;
+		private final FormatIdentifier output;
 		private final TaskGroupActivity type;
 		// optional
 		private String locale = null; 
@@ -44,6 +45,16 @@ public class TaskGroupInformation {
 		 * @param type the activity type
 		 */
 		public Builder(String input, String output, TaskGroupActivity type) {
+			this(FormatIdentifier.with(input), FormatIdentifier.with(output), type);
+		}
+
+		/**
+		 * Creates a new builder with the specified options
+		 * @param input the input format
+		 * @param output the output format
+		 * @param type the activity type
+		 */
+		public Builder(FormatIdentifier input, FormatIdentifier output, TaskGroupActivity type) {
 			Objects.requireNonNull(input, "Input format cannot be null.");
 			Objects.requireNonNull(output, "Output format cannot be null.");
 			Objects.requireNonNull(type, "Type cannot be null.");
@@ -146,16 +157,36 @@ public class TaskGroupInformation {
 	/**
 	 * Gets the input format for the task group
 	 * @return returns the input format
+	 * @deprecated
 	 */
+	@Deprecated
 	public String getInputFormat() {
+		return input.getIdentifier();
+	}
+	
+	/**
+	 * Gets the input format for the task group
+	 * @return returns the input format
+	 */
+	public FormatIdentifier getInputType() {
 		return input;
 	}
 	
 	/**
 	 * Gets the output format for the task group
 	 * @return returns the output format
+	 * @deprecated
 	 */
+	@Deprecated
 	public String getOutputFormat() {
+		return output.getIdentifier();
+	}
+	
+	/**
+	 * Gets the output format for the task group
+	 * @return returns the output format
+	 */
+	public FormatIdentifier getOutputType() {
 		return output;
 	}
 	
@@ -193,7 +224,7 @@ public class TaskGroupInformation {
 		if (getLocale()==null) {
 			throw new IllegalArgumentException("No locale.");
 		}
-		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), getLocale(), getActivity());
+		return new TaskGroupSpecification.Builder(getInputType(), getOutputType(), getLocale(), getActivity());
 	}
 	
 	/**
@@ -209,7 +240,7 @@ public class TaskGroupInformation {
 		} else if (!matchesLocale(locale)) {
 			throw new IllegalArgumentException("Argument mismatch: " + getLocale() + " vs " + locale);
 		}
-		return new TaskGroupSpecification.Builder(getInputFormat(), getOutputFormat(), locale, getActivity());
+		return new TaskGroupSpecification.Builder(getInputType(), getOutputType(), locale, getActivity());
 	}
 	
 	/**

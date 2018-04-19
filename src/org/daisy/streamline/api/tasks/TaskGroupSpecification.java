@@ -2,6 +2,8 @@ package org.daisy.streamline.api.tasks;
 
 import java.util.Objects;
 
+import org.daisy.streamline.api.media.FormatIdentifier;
+
 /**
  * Provides a specification for creating a task group instance.
  * @author Joel Håkansson
@@ -9,8 +11,8 @@ import java.util.Objects;
  */
 public final class TaskGroupSpecification {
 
-	private final String input;
-	private final String output;
+	private final FormatIdentifier input;
+	private final FormatIdentifier output;
 	private final String locale;
 	private final TaskGroupActivity activity;
 	
@@ -18,8 +20,8 @@ public final class TaskGroupSpecification {
 	 * Provides a task group specification builder.
 	 */
 	public static class Builder {
-		private final String input;
-		private final String output;
+		private final FormatIdentifier input;
+		private final FormatIdentifier output;
 		private final String locale;
 		private final TaskGroupActivity activity;
 		
@@ -29,8 +31,19 @@ public final class TaskGroupSpecification {
 		 * @param output the output format
 		 * @param locale the locale
 		 */
+		@Deprecated
 		public Builder(String input, String output, String locale) {
 			this(input, output, locale, detectActivity(input, output));
+		}
+		
+		/**
+		 * Creates a new builder with the specified parameters.
+		 * @param input the input format
+		 * @param output the output format
+		 * @param locale the locale
+		 */
+		public Builder(FormatIdentifier input, FormatIdentifier output, String locale) {
+			this(input, output, locale, detectActivity(input.getIdentifier(), output.getIdentifier()));
 		}
 
 		/**
@@ -40,7 +53,19 @@ public final class TaskGroupSpecification {
 		 * @param locale the locale
 		 * @param activity the activity type
 		 */
+		@Deprecated
 		public Builder(String input, String output, String locale, TaskGroupActivity activity) {
+			this(FormatIdentifier.with(input), FormatIdentifier.with(output), locale, activity);
+		}
+
+		/**
+		 * Creates a new builder with the specified parameters.
+		 * @param input the input format
+		 * @param output the output format
+		 * @param locale the locale
+		 * @param activity the activity type
+		 */
+		public Builder(FormatIdentifier input, FormatIdentifier output, String locale, TaskGroupActivity activity) {
 			this.input = input;
 			this.output = output;
 			this.locale = locale;
@@ -62,6 +87,7 @@ public final class TaskGroupSpecification {
 	 * @param output the output format
 	 * @param locale the locale
 	 */
+	@Deprecated
 	public TaskGroupSpecification(String input, String output, String locale) {
 		this(input, output, locale, detectActivity(input, output));
 	}
@@ -73,9 +99,10 @@ public final class TaskGroupSpecification {
 	 * @param locale the locale
 	 * @param activity the activity type
 	 */	
+	@Deprecated
 	public TaskGroupSpecification(String input, String output, String locale, TaskGroupActivity activity) {
-		this.input = input;
-		this.output = output;
+		this.input = FormatIdentifier.with(input);
+		this.output = FormatIdentifier.with(output);
 		this.locale = locale;
 		this.activity = activity;
 	}
@@ -94,7 +121,7 @@ public final class TaskGroupSpecification {
 	 * @throws NullPointerException if the task group information's locale is null
 	 */
 	public static TaskGroupSpecification.Builder with(TaskGroupInformation info) {
-		return new TaskGroupSpecification.Builder(info.getInputFormat(), info.getOutputFormat(), Objects.requireNonNull(info.getLocale()), info.getActivity());
+		return new TaskGroupSpecification.Builder(info.getInputType(), info.getOutputType(), Objects.requireNonNull(info.getLocale()), info.getActivity());
 	}
 	
 	/**
@@ -111,7 +138,7 @@ public final class TaskGroupSpecification {
 		if (!info.matchesLocale(locale)) {
 			throw new IllegalArgumentException("Argument mismatch: " + info.getLocale() + " vs " + locale);
 		}
-		return new TaskGroupSpecification.Builder(info.getInputFormat(), info.getOutputFormat(), locale, info.getActivity());
+		return new TaskGroupSpecification.Builder(info.getInputType(), info.getOutputType(), locale, info.getActivity());
 	}
 
 	private static TaskGroupActivity detectActivity(String input, String output) {
@@ -129,16 +156,36 @@ public final class TaskGroupSpecification {
 	/**
 	 * Gets the input format for the task group
 	 * @return returns the input format
+	 * @deprecated use {@link #getInputType()}
 	 */
+	@Deprecated
 	public String getInputFormat() {
+		return input.getIdentifier();
+	}
+	
+	/**
+	 * Gets the input format for the task group
+	 * @return returns the input format
+	 */
+	public FormatIdentifier getInputType() {
 		return input;
 	}
 	
 	/**
 	 * Gets the output format for the task group
 	 * @return returns the output format
+	 * @deprecated use {@link #getOutputType()}
 	 */
+	@Deprecated
 	public String getOutputFormat() {
+		return output.getIdentifier();
+	}
+	
+	/**
+	 * Gets the output format for the task group
+	 * @return returns the output format
+	 */
+	public FormatIdentifier getOutputType() {
 		return output;
 	}
 	
@@ -158,8 +205,8 @@ public final class TaskGroupSpecification {
 	 */
 	public boolean matches(TaskGroupInformation info) {
 		return	getActivity().equals(info.getActivity()) &&
-				getInputFormat().equals(info.getInputFormat()) &&
-				getOutputFormat().equals(info.getOutputFormat()) &&
+				getInputType().equals(info.getInputType()) &&
+				getOutputType().equals(info.getOutputType()) &&
 				info.matchesLocale(getLocale());
 	}
 
