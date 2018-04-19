@@ -135,7 +135,7 @@ public class TaskGroupFactoryMaker implements TaskGroupFactoryMakerService {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Attempt to locate a task group for " + spec.toString());
 		}
-		return getFactory(spec).newTaskGroup(spec.toSpecificationBuilder(locale).build());
+		return getFactory(spec).newTaskGroup(TaskGroupSpecification.with(spec, locale).build());
 	}
 
 	@Override

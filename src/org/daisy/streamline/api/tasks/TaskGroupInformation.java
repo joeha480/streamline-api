@@ -186,7 +186,9 @@ public class TaskGroupInformation {
 	/**
 	 * Provides a task group specification builder.
 	 * @return returns a builder for task group specifications
+	 * @deprecated use TaskGroupSpecification.with(TaskGroupInformation)
 	 */
+	@Deprecated
 	public TaskGroupSpecification.Builder toSpecificationBuilder() {
 		if (getLocale()==null) {
 			throw new IllegalArgumentException("No locale.");
@@ -198,7 +200,9 @@ public class TaskGroupInformation {
 	 * Creates a new task group specification builder with the current information and for the specified locale.
 	 * @param locale the locale
 	 * @return returns a new task group specification builder
+	 * @deprecated use TaskGroupSpecification.with(TaskGroupInformation, String)
 	 */
+	@Deprecated
 	public TaskGroupSpecification.Builder toSpecificationBuilder(String locale) {
 		if (locale==null) {
 			throw new IllegalArgumentException("Null locale not allowed.");

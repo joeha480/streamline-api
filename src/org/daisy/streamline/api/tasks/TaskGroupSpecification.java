@@ -1,5 +1,7 @@
 package org.daisy.streamline.api.tasks;
 
+import java.util.Objects;
+
 /**
  * Provides a specification for creating a task group instance.
  * @author Joel Håkansson
@@ -85,6 +87,33 @@ public final class TaskGroupSpecification {
 		this.activity = builder.activity;
 	}
 	
+	/**
+	 * Provides a task group specification builder.
+	 * @param info the task group information
+	 * @return returns a builder for task group specifications
+	 * @throws NullPointerException if the task group information's locale is null
+	 */
+	public static TaskGroupSpecification.Builder with(TaskGroupInformation info) {
+		return new TaskGroupSpecification.Builder(info.getInputFormat(), info.getOutputFormat(), Objects.requireNonNull(info.getLocale()), info.getActivity());
+	}
+	
+	/**
+	 * Creates a new task group specification builder with the current information and for the specified locale.
+	 * @param info the task group information
+	 * @param locale the locale
+	 * @return returns a new task group specification builder
+	 * @throws NullPointerException if locale is null
+	 * @throws IllegalArgumentException if the locale specified in the task group information doesn't match the
+	 * 			specified locale
+	 */
+	public static TaskGroupSpecification.Builder with(TaskGroupInformation info, String locale) {
+		Objects.requireNonNull(locale);
+		if (!info.matchesLocale(locale)) {
+			throw new IllegalArgumentException("Argument mismatch: " + info.getLocale() + " vs " + locale);
+		}
+		return new TaskGroupSpecification.Builder(info.getInputFormat(), info.getOutputFormat(), locale, info.getActivity());
+	}
+
 	private static TaskGroupActivity detectActivity(String input, String output) {
 		return input.equals(output)?TaskGroupActivity.ENHANCE:TaskGroupActivity.CONVERT;
 	}
