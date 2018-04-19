@@ -1,5 +1,8 @@
 package org.daisy.streamline.api.tasks;
 
+import java.util.Set;
+
+import org.daisy.streamline.api.media.FormatIdentifier;
 
 /**
  * Provides an interface for task system factories. A
@@ -28,7 +31,34 @@ public interface TaskSystemFactory {
 	 * @throws TaskSystemFactoryException if a task system with these properties cannot be created
 	 */
 	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
+	
+	/**
+	 * Lists available input formats.
+	 * @return a list of available input formats
+	 */
+	public Set<FormatIdentifier> listInputs();
+	
+	/**
+	 * Lists available output formats.
+	 * @return a list of available output formats
+	 */
+	public Set<FormatIdentifier> listOutputs();
 
+	/**
+	 * Gets a set with information about supported task systems for the specified input format and locale.
+	 * @param input the input format
+	 * @param locale the locale
+	 * @return returns a list of information for the specified locale
+	 */
+	public Set<TaskSystemInformation> listForInput(FormatIdentifier input, String locale);
+	
+	/**
+	 * Gets a set with information about supported task systems for the specified output format and locale.
+	 * @param output the output format
+	 * @param locale the locale
+	 * @return returns a list of information for the specified locale
+	 */
+	public Set<TaskSystemInformation> listForOutput(FormatIdentifier output, String locale);
 
 	/**
 	 * Returns the priority when choosing between several matching task systems.

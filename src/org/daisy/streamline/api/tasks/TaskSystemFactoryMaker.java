@@ -5,9 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import org.daisy.streamline.api.media.FormatIdentifier;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -120,5 +123,25 @@ public class TaskSystemFactoryMaker implements TaskSystemFactoryMakerService {
 	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale)
 			throws TaskSystemFactoryException {
 		return getFactory(inputFormat, outputFormat, locale).newTaskSystem(inputFormat, outputFormat, locale);
+	}
+
+	@Override
+	public Set<FormatIdentifier> listInputs() {
+		return filters.stream().map(v->v.listInputs()).flatMap(Set::stream).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<FormatIdentifier> listOutputs() {
+		return filters.stream().map(v->v.listOutputs()).flatMap(Set::stream).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<TaskSystemInformation> listForInput(FormatIdentifier input, String locale) {
+		return filters.stream().map(v->v.listForInput(input, locale)).flatMap(Set::stream).collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<TaskSystemInformation> listForOutput(FormatIdentifier output, String locale) {
+		return filters.stream().map(v->v.listForOutput(output, locale)).flatMap(Set::stream).collect(Collectors.toSet());
 	}
 }

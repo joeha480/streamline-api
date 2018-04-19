@@ -32,7 +32,6 @@ public final class TaskGroupSpecification {
 		}
 
 		/**
-/**
 		 * Creates a new builder with the specified parameters.
 		 * @param input the input format
 		 * @param output the output format

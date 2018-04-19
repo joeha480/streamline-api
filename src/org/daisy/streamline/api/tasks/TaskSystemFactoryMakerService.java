@@ -1,5 +1,9 @@
 package org.daisy.streamline.api.tasks;
 
+import java.util.Set;
+
+import org.daisy.streamline.api.media.FormatIdentifier;
+
 /**
  * <p>
  * Provides an interface for a TaskSystemFactoryMaker service. The purpose of
@@ -38,4 +42,33 @@ public interface TaskSystemFactoryMakerService {
 	 *  @throws TaskSystemFactoryException if a task system cannot be returned
 	 */
 	public TaskSystem newTaskSystem(String inputFormat, String outputFormat, String locale) throws TaskSystemFactoryException;
+	
+	/**
+	 * Lists available input formats.
+	 * @return a list of available input formats
+	 */
+	public Set<FormatIdentifier> listInputs();
+	
+	/**
+	 * Lists available output formats.
+	 * @return a list of available output formats
+	 */
+	public Set<FormatIdentifier> listOutputs();
+
+	/**
+	 * Gets a set with information about supported task systems for the specified input format and locale.
+	 * @param input the input format
+	 * @param locale the locale
+	 * @return returns a list of information for the specified locale
+	 */
+	public Set<TaskSystemInformation> listForInput(FormatIdentifier input, String locale);
+	
+	/**
+	 * Gets a set with information about supported task systems for the specified output format and locale.
+	 * @param output the output format
+	 * @param locale the locale
+	 * @return returns a list of information for the specified locale
+	 */
+	public Set<TaskSystemInformation> listForOutput(FormatIdentifier output, String locale);
+	
 }
