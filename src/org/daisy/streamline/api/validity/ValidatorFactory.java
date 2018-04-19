@@ -2,6 +2,8 @@ package org.daisy.streamline.api.validity;
 
 import java.util.Collection;
 
+import org.daisy.streamline.api.media.FormatIdentifier;
+
 /**
  * <p>
  * Provides an interface for a validator service. The purpose of this
@@ -22,16 +24,34 @@ public interface ValidatorFactory {
 	/**
 	 * Lists supported format identifiers.
 	 * @return returns a collection of supported format identifiers
+	 * @deprecated use {@link #listFormats()}
 	 */
+	@Deprecated
 	public Collection<String> listIdentifiers();
+	
+	/**
+	 * Lists supported format identifiers.
+	 * @return returns a collection of supported format identifiers
+	 */
+	public Collection<FormatIdentifier> listFormats();
 
 	/**
 	 * Creates a new validator instance.
 	 * @param identifier the format identifier
 	 * @return returns a new validator
 	 * @throws ValidatorFactoryException if a validator for the specified indentifer cannot be created
+	 * @deprecated use {@link #newValidator(FormatIdentifier)}
 	 */
+	@Deprecated
 	public Validator newValidator(String identifier) throws ValidatorFactoryException;
+	
+	/**
+	 * Creates a new validator instance.
+	 * @param identifier the format identifier
+	 * @return returns a new validator
+	 * @throws ValidatorFactoryException if a validator for the specified indentifer cannot be created
+	 */
+	public Validator newValidator(FormatIdentifier identifier) throws ValidatorFactoryException;
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using

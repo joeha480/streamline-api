@@ -1,6 +1,7 @@
 package org.daisy.streamline.api.media;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Provides details regarding a file.
@@ -14,6 +15,12 @@ public interface FileDetails {
 	 * @return returns the name, or null if not known
 	 */
 	public String getFormatName();
+	
+	/**
+	 * Gets the format's unique identifier
+	 * @return the format's unique identifier
+	 */
+	public Optional<FormatIdentifier> getFormatIdentifier();
 	
 	/**
 	 * Gets the identifying file extension of this file's format without the leading '.' (which may or may not 

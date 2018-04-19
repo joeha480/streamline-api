@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Provides a default implementation of AnnotatedFile
@@ -17,6 +18,7 @@ import java.util.Objects;
 public class DefaultAnnotatedFile implements AnnotatedFile {
 	private final Path f;
 	private final String formatName;
+	private final Optional<FormatIdentifier> formatIdentifier;
 	private final String extension;
 	private final String mediaType;
 	private final Map<String, Object> props;
@@ -29,6 +31,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	public static class Builder {
 		private Path f;
 		private String formatName = null;
+		private FormatIdentifier formatIdentifier = null;
 		private String extension = null;
 		private String mediaType = null;
 		private Map<String, Object> props = new HashMap<>();
@@ -101,7 +104,17 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 			this.formatName = value;
 			return this;
 		}
-
+		
+		/**
+		 * Sets the formatIdentifier for this file type.
+		 * @param value the formatIdentifier
+		 * @return this builder
+		 */
+		public Builder formatIdentifier(FormatIdentifier value) {
+			this.formatIdentifier = value;
+			return this;
+		}
+		
 		/**
 		 * Sets the file extension
 		 * @param value the extension
@@ -241,7 +254,27 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 * @return returns a new builder
 	 */
 	public static Builder with(AnnotatedFile f) {
-		return new Builder(f.getPath()).formatName(f.getFormatName()).extension(f.getExtension()).mediaType(f.getMediaType()).properties(f.getProperties());
+		return new Builder(f.getPath())
+				.formatName(f.getFormatName())
+				.extension(f.getExtension())
+				.mediaType(f.getMediaType())
+				.formatIdentifier(f.getFormatIdentifier().orElse(null))
+				.properties(f.getProperties());
+	}
+	
+	/**
+	 * Creates a new builder with the specified details and file.
+	 * @param fd the file details
+	 * @param f the file
+	 * @return returns a new builder
+	 */
+	public static Builder with(FileDetails fd, File f) {
+		return new Builder(f)
+				.formatName(fd.getFormatName())
+				.extension(fd.getExtension())
+				.mediaType(fd.getMediaType())
+				.formatIdentifier(fd.getFormatIdentifier().orElse(null))
+				.properties(fd.getProperties());
 	}
 	
 	/**
@@ -287,6 +320,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		this.formatName = builder.formatName;
 		this.extension = builder.extension;
 		this.mediaType = builder.mediaType;
+		this.formatIdentifier = Optional.ofNullable(builder.formatIdentifier);
 		this.props = Collections.unmodifiableMap(builder.props);
 	}
 
@@ -304,6 +338,11 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	@Override
 	public String getFormatName() {
 		return formatName;
+	}
+
+	@Override
+	public Optional<FormatIdentifier> getFormatIdentifier() {
+		return formatIdentifier;
 	}
 
 	@Override

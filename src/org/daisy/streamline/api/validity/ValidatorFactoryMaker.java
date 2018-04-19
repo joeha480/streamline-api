@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+import org.daisy.streamline.api.media.FormatIdentifier;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -86,8 +88,8 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 		synchronized (map) {
 			if (map.isEmpty() && !providers.isEmpty()) { // cache has been cleared, restore
 				for (ValidatorFactory p : providers) {			
-					for (String factoryId : p.listIdentifiers()) {
-						map.put(factoryId, p);
+					for (FormatIdentifier factoryId : p.listFormats()) {
+						map.put(factoryId.getIdentifier(), p);
 					}
 				}
 			}
@@ -98,16 +100,23 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 	 * Obtains a new instance of a Validator with the given identifier
 	 * @param identifier a string that identifies the desired implementation
 	 * @return returns a Validator for the given identifier, or null if none is found
+	 * @deprecated use {@link #newValidator(FormatIdentifier)}
 	 */
-        @Override
+	@Override
+	@Deprecated
 	public Validator newValidator(String identifier) {
+		return newValidator(FormatIdentifier.with(identifier));
+	}
+
+	@Override
+	public Validator newValidator(FormatIdentifier identifier) {
 		if (identifier==null) {
 			return null;
 		}
 		ValidatorFactory template;
 		synchronized (map) {
 			verifyMapIntegrity();
-			template = map.get(identifier);
+			template = map.get(identifier.getIdentifier());
 		}
 		if (template!=null) {
 			try {
@@ -120,14 +129,23 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 			return null;
 		}
 	}
-        
+
 	@Override
+	@Deprecated
 	public Collection<String> listIdentifiers() {
 		Set<String> ret = new HashSet<>();
 		for (ValidatorFactory p : providers) {
 			ret.addAll(p.listIdentifiers());
 		}
 		return ret;
+	}
+
+	@Override
+	public Collection<FormatIdentifier> listFormats() {
+		return providers.stream()
+				.map(p->p.listFormats())
+				.flatMap(Collection::stream)
+				.collect(Collectors.toSet());
 	}
 
 }
