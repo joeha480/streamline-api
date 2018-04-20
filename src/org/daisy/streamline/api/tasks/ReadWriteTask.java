@@ -37,4 +37,13 @@ public abstract class ReadWriteTask extends InternalTask { //NOPMD
 	 */
 	public abstract AnnotatedFile execute(AnnotatedFile input, File output) throws InternalTaskException;
 
+	@Override
+	public final Type getType() {
+		return Type.READ_WRITE;
+	}
+	
+	@Override
+	public final ReadWriteTask asReadWriteTask() {
+		return this;
+	}
 }

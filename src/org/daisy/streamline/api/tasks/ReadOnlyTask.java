@@ -34,5 +34,15 @@ public abstract class ReadOnlyTask extends InternalTask { //NOPMD
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong
 	 */
 	public abstract void execute(AnnotatedFile input) throws InternalTaskException;
+	
+	@Override
+	public final Type getType() {
+		return Type.READ_ONLY;
+	}
+	
+	@Override
+	public final ReadOnlyTask asReadOnlyTask() {
+		return this;
+	}
 
 }

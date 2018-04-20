@@ -37,4 +37,14 @@ public abstract class ExpandingTask extends InternalTask { //NOPMD
 	 */
 	public abstract List<InternalTask> resolve(AnnotatedFile input) throws InternalTaskException;
 
+	@Override
+	public final Type getType() {
+		return Type.EXPANDING;
+	}
+	
+	@Override
+	public final ExpandingTask asExpandingTask() {
+		return this;
+	}
+
 }
