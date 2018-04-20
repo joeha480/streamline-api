@@ -105,11 +105,19 @@ public class ConfigurationsCatalog implements ConfigurationsCatalogService {
 		}
 	}
 	
+	/**
+	 * Sets a provider (intended for use by the OSGi framework)
+	 * @param provider the provider to add
+	 */
 	@Reference(cardinality=ReferenceCardinality.OPTIONAL, policy=ReferencePolicy.DYNAMIC)
 	public void setUserConfigurations(UserConfigurationsProvider provider) {
 		this.userConfigurations = Optional.of(provider);
 	}
 	
+	/**
+	 * Unsets a provider (intended for use by the OSGi framework)
+	 * @param provider the factory to provider
+	 */
 	// Unset reference added automatically from setUserConfigurations annotation
 	public void unsetUserConfigurations(UserConfigurationsProvider provider) {
 		if (userConfigurations.isPresent() && userConfigurations.get().equals(provider)) {

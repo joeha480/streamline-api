@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+@SuppressWarnings("javadoc")
 public class UserConfigurationsCollectionTest {
 
 	@Test

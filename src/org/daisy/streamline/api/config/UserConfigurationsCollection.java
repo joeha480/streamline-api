@@ -68,6 +68,10 @@ public final class UserConfigurationsCollection {
 		}
 	}
 
+	/**
+	 * Gets configuration details.
+	 * @return the configuration details
+	 */
 	public synchronized Set<ConfigurationDetails> getConfigurationDetails() {
 		return inventory.entries().stream()
 				.map(c->c.getConfiguration().orElse(null))
@@ -76,13 +80,25 @@ public final class UserConfigurationsCollection {
 				.collect(Collectors.toSet());
 	}
 
-	public synchronized Map<String, Object> getConfiguration(String key) throws ConfigurationsProviderException {
+	/**
+	 * Gets a configuration.
+	 * @param key the configuration key
+	 * @return a map, or null if the key is not found
+	 */
+	public synchronized Map<String, Object> getConfiguration(String key) {
 		return Optional.ofNullable(inventory.get(key))
 				.flatMap(v->v.getConfiguration())
 				.map(v->v.getMap())
 				.orElse(null);
 	}
 
+	/**
+	 * Adds a configuration to this catalog.
+	 * @param niceName the display name
+	 * @param description the configuration description
+	 * @param config the configuration details
+	 * @return the identifier for the new configuration, or an empty optional if the configuration could not be added
+	 */
 	public synchronized Optional<String> addConfiguration(String niceName, String description, Map<String, Object> config) {
 		try {
 			if (catalog==null) {
@@ -106,7 +122,12 @@ public final class UserConfigurationsCollection {
 			return Optional.empty();
 		}
 	}
-	
+
+	/**
+	 * Removes the configuration with the specified identifier.
+	 * @param key the identifier
+	 * @return true if the configuration was successfully removed, false otherwise
+	 */
 	public synchronized boolean removeConfiguration(String key) {
 		try {
 			if (catalog==null) {
@@ -118,7 +139,12 @@ public final class UserConfigurationsCollection {
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Returns true if the provider contains the specified key.
+	 * @param key the key
+	 * @return true if the provider contains the key, false otherwise
+	 */
 	public synchronized boolean containsConfiguration(String key) {
 		return inventory.keys().contains(key);
 	}
