@@ -1,9 +1,23 @@
 package org.daisy.streamline.api.media;
-class FilePath {
+
+import java.nio.file.Path;
+
+final class FilePath {
 	private String value;
-	FilePath(String value) {
+
+	private FilePath(String value) {
 		this.value = value;
 	}
+
+	/**
+	 * @param parent the base path
+	 * @param child the child path
+	 * @throws  IllegalArgumentException if {@code child} is not a {@code Path} that can be relativized against this path
+	 */
+	static FilePath with(Path parent, Path child) {
+		return new FilePath(parent.relativize(child).toString());
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -11,6 +25,7 @@ class FilePath {
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -27,4 +42,10 @@ class FilePath {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+
 }

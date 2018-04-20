@@ -1,25 +1,41 @@
 package org.daisy.streamline.api.media;
 
 import java.io.File;
-import java.nio.file.InvalidPathException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.daisy.streamline.api.tasks.AnnotatedFile;
-import org.daisy.streamline.api.tasks.DefaultAnnotatedFile;
-
 public final class FileSet {
 	private final File baseFolder;
 	private final Map<FilePath, FileLocation> paths;
-	private final Map<FileLocation, AnnotatedFile> resources;
+	private final Map<File, AnnotatedFile> resources;
+	private FormatIdentifier formatIdentifier;
 	private AnnotatedFile manifest;
 
+	/**
+	 * Creates a new file set in the specified folder.
+	 * @param baseFolder the folder
+	 */
 	public FileSet(File baseFolder) {
 		this.baseFolder = baseFolder;
 		this.paths = new HashMap<>();
 		this.resources = new HashMap<>();
+		this.manifest = null;
+		this.formatIdentifier = null;
+	}
+
+	/**
+	 * Gets the manifest of this file set.
+	 * @return the manifest
+	 */
+	public Optional<AnnotatedFile> getManifest() {
+		return Optional.ofNullable(manifest);
 	}
 
 	/**
@@ -29,48 +45,77 @@ public final class FileSet {
 	public void setManifest(AnnotatedFile manifest) {
 		this.manifest = manifest;
 	}
+	
+	/**
+	 * Gets the format identifier for this file set.
+	 * @return the format identifier
+	 */
+	public Optional<FormatIdentifier> getFormatIdentifier() {
+		return Optional.ofNullable(formatIdentifier);
+	}
+	
+	/**
+	 * Sets the format identifier.
+	 * @param value the format identifier
+	 */
+	public void setFormatIdentifier(FormatIdentifier value) {
+		this.formatIdentifier = value;
+	}
+	
+	public FileSet copyTo(File copyPath) {
+		return null;
+		//Files.copy(input.toPath(), this.t1.toPath(), StandardCopyOption.REPLACE_EXISTING);
+	}
 
 	/**
 	 * Adds the annotated file to the file set.
 	 * @param f the file
 	 * @throws IllegalArgumentException if the file is not a child of //TODO
 	 */
+
+/*	
 	public void add(AnnotatedFile f) {
-		FileLocation loc = new FileLocation(f.getFile());
-		paths.put(toPath(f.getFile()), loc);
-		resources.put(loc, f);
+		FileLocation loc = FileLocation.with(f.getFile());
+		paths.put(FilePath.with(baseFolder.toPath(), f.getFile().toPath()), loc);
+		resources.put(f.getFile(), f);
 	}
 
-	public void add(File f) {
-		//TODO: require existing file?
+	public void add(File f, String path) throws IOException {
+		File target = new File(baseFolder, path);
+		Files.copy(f.toPath(), target.toPath());
 		add(DefaultAnnotatedFile.create(f));
 	}
-	
+
 	public void remove(AnnotatedFile f) {
 		remove(f.getFile());
 	}
 
 	public void remove(File f) {
-		resources.remove(new FileLocation(f));
-	}
+		resources.remove(FileLocation.with(f));
+	}*/
 
+	/**
+	 * Gets all resources
+	 * @return the resources
+	 */
 	public Collection<AnnotatedFile> getResources() {
 		return resources.values();
 	}
 	
+	/**
+	 * Gets the resource at a relative path.
+	 * @param path the path
+	 * @return returns the resource
+	 */
 	public Optional<AnnotatedFile> getResource(String path) {
-		return Optional.empty();
-	}
-
-	public AnnotatedFile getManifest() {
-		return manifest;
+		return Optional.ofNullable(resources.get(new File(baseFolder, path)));
 	}
 	
 	/**
 	 * Copies all external resources into this file set. All external
 	 * resources in this file set will be updated with their new locations.
 	 */
-	public void copyExternal() {
+	void copyExternal() {
 		
 	}
 
@@ -79,28 +124,21 @@ public final class FileSet {
 	 * location. Resources in this file set will be update with the new locations.
 	 * @param base the directory
 	 */
-	public void moveExternal(File base) {
+	void moveExternal(File base) {
 		
 	}
 	
 	/**
 	 * Moves all resources located in the specified file set into this file set's base
 	 * location, regardless of their current locations. Resources in this file set 
-	 * will be update with the new locations. The resources in other file set will
+	 * will be updated with the new locations. The resources in other file set will
 	 * be removed. 
 	 * @param other
 	 */
-	public void moveExternal(FileSet other) {
+	void moveExternal(FileSet other) {
 		
 	}
 
-	private FilePath toPath(File f) {
-		try {
-			return new FilePath(baseFolder.toPath().relativize(f.toPath()).toString());
-		} catch (InvalidPathException e) {
-			throw new IllegalArgumentException();
-		}
-	}
 /*
  * FileSet1
  * base path 		/tmp/123

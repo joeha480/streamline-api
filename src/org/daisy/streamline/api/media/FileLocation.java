@@ -1,12 +1,18 @@
 package org.daisy.streamline.api.media;
 
 import java.io.File;
-
-class FileLocation {
+//TODO: one could question the usefulness of this class since, a simple File object would work equally well.
+final class FileLocation {
 	private final String value;
-	FileLocation(File value) {
-		this.value = value.getAbsolutePath();
+
+	private FileLocation(String value) {
+		this.value = value;
 	}
+	
+	static FileLocation with(File value) {
+		return new FileLocation(value.getAbsolutePath());
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -14,6 +20,7 @@ class FileLocation {
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -30,4 +37,10 @@ class FileLocation {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+
 }
