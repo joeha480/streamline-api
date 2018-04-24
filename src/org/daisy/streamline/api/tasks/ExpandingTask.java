@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.FileSet;
 
 /**
  * Provides an abstract base for expanding tasks. 
@@ -36,6 +37,16 @@ public abstract class ExpandingTask extends InternalTask { //NOPMD
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
 	 */
 	public abstract List<InternalTask> resolve(AnnotatedFile input) throws InternalTaskException;
+	
+	/**
+	 * Resolves the task into other tasks based on the contents of the <code>input</code>.
+	 * @param input input file set
+	 * @return returns a list of internal tasks
+	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
+	 */
+	public List<InternalTask> resolve(FileSet input) throws InternalTaskException {
+		return resolve(input.getManifest());
+	}
 
 	@Override
 	public final Type getType() {

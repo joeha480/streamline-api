@@ -1,159 +1,97 @@
 package org.daisy.streamline.api.media;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
-public final class FileSet {
-	private final File baseFolder;
-	private final Map<FilePath, FileLocation> paths;
-	private final Map<File, AnnotatedFile> resources;
-	private FormatIdentifier formatIdentifier;
-	private AnnotatedFile manifest;
-
-	/**
-	 * Creates a new file set in the specified folder.
-	 * @param baseFolder the folder
-	 */
-	public FileSet(File baseFolder) {
-		this.baseFolder = baseFolder;
-		this.paths = new HashMap<>();
-		this.resources = new HashMap<>();
-		this.manifest = null;
-		this.formatIdentifier = null;
-	}
-
-	/**
-	 * Gets the manifest of this file set.
-	 * @return the manifest
-	 */
-	public Optional<AnnotatedFile> getManifest() {
-		return Optional.ofNullable(manifest);
-	}
-
-	/**
-	 * Sets the manifest of this file set.
-	 * @param manifest the manifest
-	 */
-	public void setManifest(AnnotatedFile manifest) {
-		this.manifest = manifest;
-	}
+/**
+ * Provides a file set.
+ * @author Joel Håkansson
+ */
+public interface FileSet {
 	
 	/**
-	 * Gets the format identifier for this file set.
-	 * @return the format identifier
+	 * The base folder for this file set.
+	 * @return the base folder
 	 */
-	public Optional<FormatIdentifier> getFormatIdentifier() {
-		return Optional.ofNullable(formatIdentifier);
-	}
+	public BaseFolder getBaseFolder();
 	
 	/**
-	 * Sets the format identifier.
-	 * @param value the format identifier
+	 * Gets the manifest for this file set. This file 
+	 * must have {@link #getBaseFolder()} as an ancestor.
+	 * 
+	 * @return the entry point
 	 */
-	public void setFormatIdentifier(FormatIdentifier value) {
-		this.formatIdentifier = value;
-	}
+	public AnnotatedFile getManifest();
 	
-	public FileSet copyTo(File copyPath) {
-		return null;
-		//Files.copy(input.toPath(), this.t1.toPath(), StandardCopyOption.REPLACE_EXISTING);
-	}
-
 	/**
-	 * Adds the annotated file to the file set.
-	 * @param f the file
-	 * @throws IllegalArgumentException if the file is not a child of //TODO
+	 * Returns true if the specified path is the manifest, false otherwise.
+	 * @param path the path
+	 * @return true if the path is the manifest, false otherwise
 	 */
-
-/*	
-	public void add(AnnotatedFile f) {
-		FileLocation loc = FileLocation.with(f.getFile());
-		paths.put(FilePath.with(baseFolder.toPath(), f.getFile().toPath()), loc);
-		resources.put(f.getFile(), f);
-	}
-
-	public void add(File f, String path) throws IOException {
-		File target = new File(baseFolder, path);
-		Files.copy(f.toPath(), target.toPath());
-		add(DefaultAnnotatedFile.create(f));
-	}
-
-	public void remove(AnnotatedFile f) {
-		remove(f.getFile());
-	}
-
-	public void remove(File f) {
-		resources.remove(FileLocation.with(f));
-	}*/
+	public boolean isManifest(String path);
+	
+	/**
+	 * Gets the format identifier for the file set.
+	 * @return returns the identifier
+	 */
+	public Optional<FormatIdentifier> getFormatIdentifier();
 
 	/**
-	 * Gets all resources
+	 * Gets all registered resources.
 	 * @return the resources
 	 */
-	public Collection<AnnotatedFile> getResources() {
-		return resources.values();
-	}
+	public Map<String, AnnotatedFile> getResources();
 	
 	/**
-	 * Gets the resource at a relative path.
+	 * Gets all resource paths in the file set.
+	 * @return a set of resource paths
+	 */
+	public Set<String> getResourcePaths();
+	
+	/**
+	 * Gets the resource at the specified path.
 	 * @param path the path
 	 * @return returns the resource
 	 */
-	public Optional<AnnotatedFile> getResource(String path) {
-		return Optional.ofNullable(resources.get(new File(baseFolder, path)));
-	}
+	public Optional<AnnotatedFile> getResource(String path);
 	
 	/**
-	 * Copies all external resources into this file set. All external
-	 * resources in this file set will be updated with their new locations.
+	 * Opens a stream to external resources.
+	 * @return a stream of external resources
 	 */
-	void copyExternal() {
-		
-	}
-
+	public Stream<AnnotatedFile> streamExternal();
+	
+	/**
+	 * Copies all external resources into this file set. The resources in this
+	 * file set will be updated with their new locations.
+	 * 
+	 * For the copy to succeed, the path to the new location must be a descendant
+	 * of {@link #getBaseFolder()}. For example, if the resource path starts with
+	 * <code>..</code>, it will not be processed.
+	 */
+	public void copyExternal();
+	
 	/**
 	 * Moves all resources located in the specified directory into this file set's base
 	 * location. Resources in this file set will be update with the new locations.
 	 * @param base the directory
 	 */
-	void moveExternal(File base) {
-		
-	}
+	public void moveExternal(Path base);
 	
 	/**
-	 * Moves all resources located in the specified file set into this file set's base
-	 * location, regardless of their current locations. Resources in this file set 
-	 * will be updated with the new locations. The resources in other file set will
-	 * be removed. 
-	 * @param other
+	 * Internalizes the specified file set path by copying the original resource
+	 * into the file set. 
+	 * @param path the path
 	 */
-	void moveExternal(FileSet other) {
-		
-	}
-
-/*
- * FileSet1
- * base path 		/tmp/123
- * manifest 		/tmp/123/META-INF/manifest.mf
- * manifest path	META-INF/manifest.mf
- * res1				/tmp/123/res/res1.jpg
- * res1 path		res/res1.jpg
- * 
- * FileSet2
- * base path		/tmp/321
- * manifest			/tmp/321/main.xml
- * manifest path	main.xml
- * res1				/tmp/123/res/res1.jpg
- * res1 path		res1.jpg
- *
- * 
- */
+	public void internalizeCopy(String path);
+	
+	/**
+	 * Internalizes the specified file set path by moving the resource from its
+	 * current location into the file set. See also, {@link #internalizeCopy(String)}. 
+	 * @param path the path
+	 */
+	public void internalize(String path);
 }
