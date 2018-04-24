@@ -32,6 +32,10 @@ public final class BaseFolder {
 		return dir;
 	}
 	
+	/**
+	 * 
+	 * @return the path
+	 */
 	public Path getPath() {
 		return dir.toPath();
 	}

@@ -13,8 +13,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Provides a default file set.
+ * @author Joel Håkansson
+ */
 public final class DefaultFileSet implements FileSet {
 	private static final Logger logger = Logger.getLogger(DefaultFileSet.class.getCanonicalName());
 	private final BaseFolder baseFolder;
@@ -22,47 +27,93 @@ public final class DefaultFileSet implements FileSet {
 	private final Optional<FormatIdentifier> formatIdentifier;
 	private final Map<String, AnnotatedFile> resources;
 	
+	/**
+	 * Provides a builder of file sets.
+	 */
 	public static class Builder {
 		private final BaseFolder baseFolder;
 		private final String manifestPath;
 		private FormatIdentifier formatIdentifier  = null;
 		private final Map<String, AnnotatedFile> resources = new HashMap<>();
 
+		/**
+		 * Creates a new builder with the specified base folder and manifest.
+		 * @param baseFolder the base folder
+		 * @param manifest the manifest
+		 * @throws IllegalArgumentException if the manifest isn't a descendant of the base folder
+		 */
 		public Builder(BaseFolder baseFolder, AnnotatedFile manifest) {
-			this(baseFolder, manifest, baseFolder.getPath().relativize(manifest.getFile().toPath()).toString()); 
+			this(baseFolder, manifest, baseFolder.getPath().relativize(requireDescendant(baseFolder.getPath(), manifest.getFile().toPath())).toString()); 
 		}
 
+		/**
+		 * Creates a new builder with the specified base folder, manifest and manifest path.
+		 * @param baseFolder the base folder
+		 * @param manifest the manifest file
+		 * @param manifestPath the path to the manifest within the file set
+		 */
 		public Builder(BaseFolder baseFolder, AnnotatedFile manifest, String manifestPath) {
 			this.baseFolder = baseFolder;
 			this.manifestPath = manifestPath;
 			add(manifest, manifestPath);
 		}
 
+		/**
+		 * Sets the format identifier for this builder.
+		 * @param value the format identifier
+		 * @return this builder
+		 */
 		public Builder formatIdentifier(FormatIdentifier value) {
 			this.formatIdentifier = value;
 			return this;
 		}
 
+		/**
+		 * Adds a resource to this builder.
+		 * @param f the file
+		 * @return this builder
+		 */
 		public Builder add(File f) {
 			add(DefaultAnnotatedFile.with(f).build());
 			return this;
 		}
 
+		/**
+		 * Adds a resource to this builder.
+		 * @param f the file
+		 * @return this builder
+		 */
 		public Builder add(AnnotatedFile f) {
-			add(f, requireDescendant(baseFolder.getPath(), baseFolder.getPath().relativize(f.getFile().toPath()).normalize()).toString());
+			add(f, baseFolder.getPath().relativize(requireDescendant(baseFolder.getPath(), f.getFile().toPath()).normalize()).toString());
 			return this;
 		}
 
+		/**
+		 * Adds a resource to this builder.
+		 * @param f the file
+		 * @param path the path within the file set
+		 * @return this builder
+		 */
 		public Builder add(File f, String path) {
 			add(DefaultAnnotatedFile.with(f).build(), path);
 			return this;
 		}
 
+		/**
+		 * Adds a resource to this builder.
+		 * @param f the file
+		 * @param path the path within the file set
+		 * @return this builder
+		 */
 		public Builder add(AnnotatedFile f, String path) {
-			resources.put(normalizeRelativePath(baseFolder, path), f);
+			resources.put(normalizeRelativePath(baseFolder.getPath(), path), f);
 			return this;
 		}
 
+		/**
+		 * Builds the file set.
+		 * @return a new file set
+		 */
 		public DefaultFileSet build() {
 			return new DefaultFileSet(this);
 		}
@@ -75,17 +126,36 @@ public final class DefaultFileSet implements FileSet {
 		this.resources = new HashMap<>(builder.resources);
 	}
 
+	/**
+	 * Creates a new builder with the specified base folder and manifest.
+	 * @param baseFolder the base folder
+	 * @param manifest the manifest
+	 * @return returns a new builder
+	 * @throws IllegalArgumentException if the manifest isn't a descendant of the base folder
+	 */
 	public static DefaultFileSet.Builder with(BaseFolder baseFolder, AnnotatedFile manifest) {
 		return new Builder(baseFolder, manifest);
 	}
 	
-	static String normalizeRelativePath(BaseFolder base, String path) {
-		return base.getPath().relativize(base.getPath().resolve(path)).normalize().toString();
+	/**
+	 * Creates a new builder with the specified base folder and manifest.
+	 * @param baseFolder the base folder
+	 * @param manifest the manifest
+	 * @param manifestPath the path to the manifest within the file set
+	 * @return returns a new builder
+	 * @throws IllegalArgumentException if the manifest isn't a descendant of the base folder
+	 */
+	public static DefaultFileSet.Builder with(BaseFolder baseFolder, AnnotatedFile manifest, String manifestPath) {
+		return new Builder(baseFolder, manifest, manifestPath);
+	}
+	
+	static String normalizeRelativePath(Path base, String path) {
+		return base.relativize(base.resolve(path)).normalize().toString();
 	}
 	
 	static Path requireDescendant(Path base, Path path) {
 		if (!isDescendant(base, path)) {
-			throw new IllegalArgumentException(String.format("'%1' is not a descendant of '%2'", path, base));
+			throw new IllegalArgumentException(String.format("'%s' is not a descendant of '%s'", path, base));
 		}
 		return path;
 	}
@@ -104,9 +174,13 @@ public final class DefaultFileSet implements FileSet {
 		return Objects.requireNonNull(resources.get(manifestPath));
 	}
 	
+	public String getManifestPath() {
+		return manifestPath;
+	}
+	
 	@Override
 	public boolean isManifest(String path) {
-		return resources.containsKey(normalizeRelativePath(baseFolder, path));
+		return resources.containsKey(normalizeRelativePath(baseFolder.getPath(), path));
 	}
 
 	@Override
@@ -114,8 +188,11 @@ public final class DefaultFileSet implements FileSet {
 		return formatIdentifier;
 	}
 
-	@Override
-	public Map<String, AnnotatedFile> getResources() {
+	/**
+	 * Gets all registered resources.
+	 * @return the resources
+	 */
+	Map<String, AnnotatedFile> getResources() {
 		return Collections.unmodifiableMap(resources);
 	}
 	
@@ -126,13 +203,13 @@ public final class DefaultFileSet implements FileSet {
 	
 	@Override
 	public Optional<AnnotatedFile> getResource(String path) {
-		return Optional.ofNullable(resources.get(normalizeRelativePath(baseFolder, path)));
+		return Optional.ofNullable(resources.get(normalizeRelativePath(baseFolder.getPath(), path)));
 	}
 
 	/**
 	 * Creates a new file set at the specified location. All other properties 
 	 * are copied from this file set. Resources are copied to the new file set
-	 * to the extent possible, see {@link #copyExternal()}.
+	 * to the extent possible, see {@link #internalizeAllCopy()}.
 	 * @param copyPath the new location, this must point to an existing directory. It is recommended,
 	 * although not strictly required, that the folder is also empty.
 	 * @return the created file set
@@ -140,7 +217,7 @@ public final class DefaultFileSet implements FileSet {
 	public FileSet copyTo(BaseFolder copyPath) {
 		// Create a new file set at the specified location
 		// All other properties are copied
-		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(copyPath, this.getManifest(), this.manifestPath);
+		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(copyPath, this.getManifest(), this.getManifestPath());
 		builder.formatIdentifier(this.getFormatIdentifier().orElse(null));
 		// Add all resources from the original file set
 		getResourcePaths().stream().forEach(v->{
@@ -148,8 +225,43 @@ public final class DefaultFileSet implements FileSet {
 		});
 		DefaultFileSet ret = builder.build();
 		// Internalize all resources by coping them
-		ret.copyExternal();
+		//FIXME: all resources should be copied manually, also use findCommonDirectory
+		ret.internalizeAllCopy();
 		return ret;
+	}
+	
+	Optional<Path> findCommonDirectory() {
+		if (resources.isEmpty()) {
+			return Optional.empty();
+		}
+		// Map to a set of normalized paths
+		Set<Path> tmp = resources.values().stream()
+				.map(v->v.getFile().toPath().normalize())
+				.collect(Collectors.toSet());
+		if (tmp.size()==1) {
+			// Easy, only one resource
+			return Optional.ofNullable(tmp.iterator().next().getParent());
+		}
+		int maxNameCount = tmp.stream()
+				.mapToInt(v->v.getNameCount())
+				.max()
+				.orElse(0);
+		// Look for shared ancestors
+		int ret = 0;
+		for (int i=1;;i++) {
+			int ii = i;
+			if (i<maxNameCount && tmp.stream()
+					// gets the ancestor at the current level
+					.map(v->v.subpath(0, Math.min(ii, v.getNameCount()-1)))
+					.distinct()
+					.count()==1) {
+				ret = i;
+			} else {
+				break;
+			}
+		}
+		// All resources are equal up to the end index, so just use anyone
+		return Optional.ofNullable(tmp.iterator().next().subpath(0, ret));
 	}
 	
 	@Override
@@ -159,17 +271,17 @@ public final class DefaultFileSet implements FileSet {
 	}
 
 	@Override
-	public void copyExternal() {
+	public void internalizeAllCopy() {
 		resources.entrySet().forEach(r->{
-			copyExternal(r.getKey(), r.getValue()).ifPresent(f->r.setValue(f));
+			internalizeCopy(r.getKey(), r.getValue()).ifPresent(f->r.setValue(f));
 		});
 	}
 	
 	@Override
-	public void moveExternal(Path base) {
+	public void internalizeBelow(Path base) {
 		resources.entrySet().forEach(r->{
 			if (isDescendant(base, r.getValue().getFile().toPath())) {
-				moveExternal(r.getKey(), r.getValue()).ifPresent(v->r.setValue(v));
+				internalize(r.getKey(), r.getValue()).ifPresent(v->r.setValue(v));
 			}
 		});
 	}
@@ -178,7 +290,7 @@ public final class DefaultFileSet implements FileSet {
 	public void internalizeCopy(String path) {
 		Optional.ofNullable(resources.get(path))
 			.ifPresent(
-				f->copyExternal(path, f).ifPresent(v->resources.put(path, v))
+				f->internalizeCopy(path, f).ifPresent(v->resources.put(path, v))
 			);
 	}
 	
@@ -186,11 +298,11 @@ public final class DefaultFileSet implements FileSet {
 	public void internalize(String path) {
 		Optional.ofNullable(resources.get(path))
 			.ifPresent(
-				f->moveExternal(path, f).ifPresent(v->resources.put(path, v))
+				f->internalize(path, f).ifPresent(v->resources.put(path, v))
 			);
 	}
 	
-	private Optional<AnnotatedFile> copyExternal(String path, AnnotatedFile f) {
+	private Optional<AnnotatedFile> internalizeCopy(String path, AnnotatedFile f) {
 		if (!isDescendant(baseFolder.getPath(), f.getFile().toPath())) {
 			Path newLocation = baseFolder.getPath().resolve(path);
 			if (isDescendant(baseFolder.getPath(), newLocation)) {
@@ -205,7 +317,7 @@ public final class DefaultFileSet implements FileSet {
 		return Optional.empty();
 	}
 	
-	private Optional<AnnotatedFile> moveExternal(String path, AnnotatedFile f) {
+	private Optional<AnnotatedFile> internalize(String path, AnnotatedFile f) {
 		if (!isDescendant(baseFolder.getPath(), f.getFile().toPath())) {
 			Path newLocation = baseFolder.getPath().resolve(path);
 			if (isDescendant(baseFolder.getPath(), newLocation)) {

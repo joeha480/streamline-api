@@ -1,7 +1,6 @@
 package org.daisy.streamline.api.media;
 
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -27,6 +26,12 @@ public interface FileSet {
 	public AnnotatedFile getManifest();
 	
 	/**
+	 * Gets the path to the manifest within the file set.
+	 * @return the path to the manifest
+	 */
+	public String getManifestPath();
+	
+	/**
 	 * Returns true if the specified path is the manifest, false otherwise.
 	 * @param path the path
 	 * @return true if the path is the manifest, false otherwise
@@ -38,12 +43,6 @@ public interface FileSet {
 	 * @return returns the identifier
 	 */
 	public Optional<FormatIdentifier> getFormatIdentifier();
-
-	/**
-	 * Gets all registered resources.
-	 * @return the resources
-	 */
-	public Map<String, AnnotatedFile> getResources();
 	
 	/**
 	 * Gets all resource paths in the file set.
@@ -71,19 +70,27 @@ public interface FileSet {
 	 * For the copy to succeed, the path to the new location must be a descendant
 	 * of {@link #getBaseFolder()}. For example, if the resource path starts with
 	 * <code>..</code>, it will not be processed.
+	 * 
+	 * See also, {@link #internalizeBelow(Path)}.
 	 */
-	public void copyExternal();
+	public void internalizeAllCopy();
 	
 	/**
 	 * Moves all resources located in the specified directory into this file set's base
 	 * location. Resources in this file set will be update with the new locations.
+	 * 
+	 * For the move to succeed, the path to the new location must be a descendant
+	 * of {@link #getBaseFolder()}. For example, if the resource path starts with
+	 * <code>..</code>, it will not be processed.
+	 * 
+	 * See also, {@link #internalizeAllCopy()}.
 	 * @param base the directory
 	 */
-	public void moveExternal(Path base);
+	public void internalizeBelow(Path base);
 	
 	/**
 	 * Internalizes the specified file set path by copying the original resource
-	 * into the file set. 
+	 * into the file set. See also, {@link #internalize(String)}.
 	 * @param path the path
 	 */
 	public void internalizeCopy(String path);
