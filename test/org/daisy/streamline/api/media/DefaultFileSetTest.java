@@ -81,7 +81,7 @@ public class DefaultFileSetTest {
 		BaseFolder copy1Folder = BaseFolder.with("build", "test", "copy1");
 		BaseFolder copy2Folder = BaseFolder.with("build", "test", "copy2");
 		// Copy file set to a second location
-		FileSet fs1 = buildFileSet().copyTo(copy1Folder);
+		FileSet fs1 = DefaultFileSet.copy(buildFileSet(), copy1Folder);
 		// Test the number of external resources (nothing)
 		assertEquals(0, fs1.streamExternal().map(v->v.getPath()).count());
 		// Test the number of existing resources

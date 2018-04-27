@@ -222,6 +222,11 @@ public final class DefaultFileSet implements ModifiableFileSet {
 	}
 	
 	@Override
+	public Optional<AnnotatedFile> getResourceForKey(String path) {
+		return Optional.ofNullable(resources.get(path));
+	}
+	
+	@Override
 	public Optional<AnnotatedFile> getResource(String path) {
 		return Optional.ofNullable(resources.get(normalizeRelativePath(baseFolder.getPath(), path)));
 	}
@@ -235,20 +240,21 @@ public final class DefaultFileSet implements ModifiableFileSet {
 	 * Creates a new file set at the specified location. All other properties 
 	 * are copied from this file set. Resources are copied to the new file set
 	 * to the extent possible, see {@link #internalizeAllCopy()}.
-	 * @param copyPath the new location, this must point to an existing directory. It is recommended,
+	 * @param source the original file set
+	 * @param target the new location, this must point to an existing directory. It is recommended,
 	 * although not strictly required, that the folder is also empty.
 	 * @return the created file set
 	 * @throws IOException if an I/O error occurs
 	 */
-	public FileSet copyTo(BaseFolder copyPath) throws IOException {
-		Files.createDirectories(copyPath.getPath());
+	public static DefaultFileSet copy(FileSet source, BaseFolder target) throws IOException {
+		Files.createDirectories(target.getPath());
 		// Create a new file set at the specified location
 		// All other properties are copied
-		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(copyPath, this.getManifest(), this.getManifestPath());
-		builder.formatIdentifier(this.getFormatIdentifier().orElse(null));
+		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(target, source.getManifest(), source.getManifestPath());
+		builder.formatIdentifier(source.getFormatIdentifier().orElse(null));
 		// Add all resources from the original file set
-		getResourcePaths().stream().forEach(v->{
-			builder.add(resources.get(v), v);
+		source.getResourcePaths().stream().forEach(v->{
+			source.getResourceForKey(v).ifPresent(key->builder.add(key, v));
 		});
 		DefaultFileSet ret = builder.build();
 		// Internalize all resources by coping them

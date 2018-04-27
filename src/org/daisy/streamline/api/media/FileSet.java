@@ -64,7 +64,17 @@ public interface FileSet {
 	public Set<String> getResourcePaths();
 	
 	/**
-	 * Gets the resource at the specified path.
+	 * Gets the resource for the specified key. This method is intended
+	 * to be used together with {@link #getResourcePaths()}.
+	 * @param key the resource key
+	 * @return the resource
+	 */
+	public Optional<AnnotatedFile> getResourceForKey(String key);
+	
+	/**
+	 * Gets the resource at the specified relative path. Unlike {@link #getResourceForKey(String)},
+	 * this method may perform some normalization on the provided path in order
+	 * to find the resource.
 	 * @param path the path
 	 * @return the resource
 	 */
