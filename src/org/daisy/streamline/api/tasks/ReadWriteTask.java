@@ -31,7 +31,9 @@ public abstract class ReadWriteTask extends InternalTask { //NOPMD
 	 * @param input input file
 	 * @param output output file
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
+	 * @deprecated use {@link #execute(AnnotatedFile, File)}
 	 */
+	@Deprecated
 	public abstract void execute(File input, File output) throws InternalTaskException;
 	
 	/**

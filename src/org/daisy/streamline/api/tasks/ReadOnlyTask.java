@@ -26,7 +26,9 @@ public abstract class ReadOnlyTask extends InternalTask { //NOPMD
 	 * Apply the task to <code>input</code>
 	 * @param input input file
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
+	 * @deprecated use {@link #execute(AnnotatedFile)}
 	 */
+	@Deprecated
 	public abstract void execute(File input) throws InternalTaskException;
 	
 	/**

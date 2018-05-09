@@ -27,7 +27,9 @@ public abstract class ExpandingTask extends InternalTask { //NOPMD
 	 * @param input input file
 	 * @return returns a list of internal tasks
 	 * @throws InternalTaskException throws InternalTaskException if something goes wrong.
+	 * @deprecated use {@link #resolve(AnnotatedFile)}
 	 */
+	@Deprecated
 	public abstract List<InternalTask> resolve(File input) throws InternalTaskException;
 	
 	/**
