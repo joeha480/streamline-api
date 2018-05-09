@@ -396,7 +396,7 @@ public final class DefaultFileSet implements ModifiableFileSet {
 				try {
 					Files.createDirectories(newLocation.getParent());
 					Files.copy(f.getPath(), newLocation, StandardCopyOption.REPLACE_EXISTING);
-					return Optional.of(DefaultAnnotatedFile.with(f).file(newLocation.toFile()).build());
+					return Optional.of(DefaultAnnotatedFile.with(f).file(newLocation).build());
 				} catch (IOException e) {
 					logger.log(Level.WARNING, "Could not copy file: " + f.getPath(), e);
 				}				
@@ -412,7 +412,7 @@ public final class DefaultFileSet implements ModifiableFileSet {
 				try {
 					Files.createDirectories(newLocation.getParent());
 					Files.move(f.getPath(), newLocation, StandardCopyOption.REPLACE_EXISTING);
-					return Optional.of(DefaultAnnotatedFile.with(f).file(newLocation.toFile()).build());
+					return Optional.of(DefaultAnnotatedFile.with(f).file(newLocation).build());
 				} catch (IOException e) {
 					logger.log(Level.WARNING, "Could not move file: " + f.getPath(), e);
 				}

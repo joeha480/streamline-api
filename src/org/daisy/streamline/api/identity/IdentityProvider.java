@@ -81,7 +81,7 @@ public class IdentityProvider implements IdentityProviderService {
 
 	@Override
 	public AnnotatedFile identify(File in) {
-		AnnotatedFile f = DefaultAnnotatedFile.create(in);
+		AnnotatedFile f = DefaultAnnotatedFile.create(in.toPath());
 
 		// get a list of factories
 		List<IdentifierFactory> factories = new ArrayList<>(filters);		

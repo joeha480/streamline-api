@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides a default implementation of AnnotatedFile
@@ -14,7 +15,7 @@ import java.util.Map;
  * @author Joel Håkansson
  */
 public class DefaultAnnotatedFile implements AnnotatedFile {
-	private final File f;
+	private final Path f;
 	private final String formatName;
 	private final String extension;
 	private final String mediaType;
@@ -26,7 +27,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 *
 	 */
 	public static class Builder {
-		private File f;
+		private Path f;
 		private String formatName = null;
 		private String extension = null;
 		private String mediaType = null;
@@ -39,12 +40,26 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * 
 		 * @param f the file
 		 * @throws IllegalArgumentException if file is null
+		 * @deprecated use {@code Builder(Path)}
 		 */
+		@Deprecated
 		public Builder(File f) {
 			if (f==null) {
 				throw new IllegalArgumentException("Null not allowed");
 			}
-			this.f = f;
+			this.f = f.toPath();
+		}
+		
+		/**
+		 * Creates a new builder with the specified file as its file.
+		 * Note that the extension and media type is <b>NOT</b> set
+		 * from the supplied file.
+		 * 
+		 * @param f the file
+		 * @throws NullPointerException if file is null
+		 */
+		public Builder(Path f) {
+			this.f = Objects.requireNonNull(f);
 		}
 		
 		/**
@@ -52,12 +67,28 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @param value the file
 		 * @return returns this builder
 		 * @throws IllegalArgumentException if file is null
+		 * @deprecated use {@link #file(Path)}
 		 */
+		@Deprecated
 		public Builder file(File value) {
 			if (value==null) {
 				throw new IllegalArgumentException("Null not allowed");
 			}
-			this.f = value;
+			this.f = value.toPath();
+			return this;
+		}
+		
+		/**
+		 * Sets the file.
+		 * @param value the file
+		 * @return returns this builder
+		 * @throws NullPointerException if file is null
+		 */
+		public Builder file(Path value) {
+			if (value==null) {
+				throw new IllegalArgumentException("Null not allowed");
+			}
+			this.f = Objects.requireNonNull(value);
 			return this;
 		}
 		
@@ -85,12 +116,29 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * Sets the file extension to the extension of the specified file.
 		 * @param value the file to use
 		 * @return this builder
+		 * @deprecated use {@link #extension(Path)}
 		 */
+		@Deprecated
 		public Builder extension(File value) {
 			String inp = value.getName();
-			int inx = inp.lastIndexOf('.');
-			this.extension = (inx>-1 && inx<inp.length()-1)?inp.substring(inx + 1):null;
+			this.extension = findExtension(inp);
 			return this;
+		}
+		
+		/**
+		 * Sets the file extension to the extension of the specified file.
+		 * @param value the file to use
+		 * @return this builder
+		 */
+		public Builder extension(Path value) {
+			String inp = value.getFileName().toString();
+			this.extension = findExtension(inp);
+			return this;
+		}
+		
+		private static String findExtension(String inp) {
+			int inx = inp.lastIndexOf('.');
+			return (inx>-1 && inx<inp.length()-1)?inp.substring(inx + 1):null;
 		}
 		
 		/**
@@ -109,9 +157,23 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @param value the file to use
 		 * @return returns this builder
 		 * @throws IOException if an I/O error occurs
+		 * @deprecated use {@link #mediaType(Path)}
 		 */
+		@Deprecated
 		public Builder mediaType(File value) throws IOException {
 			this.mediaType = Files.probeContentType(value.toPath());
+			return this;
+		}
+		
+		/**
+		 * Sets the media type to the media type detected by {@link java.nio.file.Files#probeContentType(java.nio.file.Path)} on
+		 * the specified file.
+		 * @param value the path to use
+		 * @return returns this builder
+		 * @throws IOException if an I/O error occurs
+		 */
+		public Builder mediaType(Path value) throws IOException {
+			this.mediaType = Files.probeContentType(value);
 			return this;
 		}
 		
@@ -154,7 +216,9 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 * 
 	 * @param f the file
 	 * @return returns a new builder
+	 * @deprecated use {@link #with(Path)}
 	 */
+	@Deprecated
 	public static Builder with(File f) {
 		return new Builder(f);
 	}
@@ -168,7 +232,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 * @return returns a new builder
 	 */
 	public static Builder with(Path f) {
-		return new Builder(f.toFile());
+		return new Builder(f);
 	}
 	
 	/**
@@ -177,7 +241,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 * @return returns a new builder
 	 */
 	public static Builder with(AnnotatedFile f) {
-		return new Builder(f.getFile()).formatName(f.getFormatName()).extension(f.getExtension()).mediaType(f.getMediaType()).properties(f.getProperties());
+		return new Builder(f.getPath()).formatName(f.getFormatName()).extension(f.getExtension()).mediaType(f.getMediaType()).properties(f.getProperties());
 	}
 	
 	/**
@@ -187,8 +251,28 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 * process, use {@link #with(File)}.
 	 * @param f the file
 	 * @return returns a new DefaultAnnotatedFile instance
+	 * @deprecated use {@link #create(Path)}
 	 */
+	@Deprecated
 	public static DefaultAnnotatedFile create(File f) {
+		Builder ret = new Builder(f).extension(f);
+		try {
+			ret.mediaType(f);
+		} catch (IOException e) {
+			// no action needed
+		}
+		return ret.build();
+	}
+	
+	/**
+	 * Creates a new DefaultAnnotatedFile with the properties of the specified file.
+	 * The media type will be probed by {@link java.nio.file.Files#probeContentType(java.nio.file.Path)}.
+	 * If this process is unsuccessful, the media type will be null. For more control over the 
+	 * process, use {@link #with(File)}.
+	 * @param f the path
+	 * @return returns a new DefaultAnnotatedFile instance
+	 */
+	public static DefaultAnnotatedFile create(Path f) {
 		Builder ret = new Builder(f).extension(f);
 		try {
 			ret.mediaType(f);
@@ -207,13 +291,14 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	}
 
 	@Override
+	@Deprecated
 	public File getFile() {
-		return f;
+		return f.toFile();
 	}
 
 	@Override
 	public Path getPath() {
-		return f.toPath();
+		return f;
 	}
 	
 	@Override
