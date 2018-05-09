@@ -247,14 +247,46 @@ public final class DefaultFileSet implements ModifiableFileSet {
 	 * @throws IOException if an I/O error occurs
 	 */
 	public static DefaultFileSet copy(FileSet source, BaseFolder target) throws IOException {
+		return copyInner(source, source.getManifestPath(), target);
+	}
+
+	/**
+	 * Creates a new file set at the specified location. All other properties 
+	 * are copied from this file set. Resources are copied to the new file set
+	 * to the extent possible, see {@link #internalizeAllCopy()}.
+	 * @param source the original file set
+	 * @param target the new location, this must point to an existing directory. It is recommended,
+	 * although not strictly required, that the folder is also empty.
+	 * @param manifestFileName the name of the manifest file. Note that the <em>path</em> to the manifest file
+	 * cannot be influenced
+	 * @return the created file set
+	 * @throws IOException if an I/O error occurs
+	 * @throws IllegalArgumentException if the file name is not valid
+	 */
+	public static DefaultFileSet copy(FileSet source, BaseFolder target, String manifestFileName) throws IOException {
+		Path manifestFolder = target.getPath().resolve(source.getManifestPath()).getParent();
+		Path manifestPath = manifestFolder.resolve(manifestFileName);
+		if (!manifestPath.getParent().equals(manifestFolder)) {
+			throw new IllegalArgumentException("Illegal characters in file name: " + manifestFileName);
+		}
+		String manifestPathString = target.getPath()
+				.relativize(manifestPath)
+				.normalize()
+				.toString();
+		return copyInner(source, manifestPathString, target);
+	}
+
+	private static DefaultFileSet copyInner(FileSet source, String manifestPath, BaseFolder target) throws IOException {
 		Files.createDirectories(target.getPath());
 		// Create a new file set at the specified location
 		// All other properties are copied
-		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(target, source.getManifest(), source.getManifestPath());
+		DefaultFileSet.Builder builder = new DefaultFileSet.Builder(target, source.getManifest(), manifestPath);
 		builder.formatIdentifier(source.getFormatIdentifier().orElse(null));
 		// Add all resources from the original file set
 		source.getResourcePaths().stream().forEach(v->{
-			source.getResourceForKey(v).ifPresent(key->builder.add(key, v));
+			if (!v.equals(source.getManifestPath())) {
+				source.getResourceForKey(v).ifPresent(key->builder.add(key, v));
+			}
 		});
 		DefaultFileSet ret = builder.build();
 		// Internalize all resources by coping them
