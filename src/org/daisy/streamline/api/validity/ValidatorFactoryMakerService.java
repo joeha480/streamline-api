@@ -1,6 +1,9 @@
 package org.daisy.streamline.api.validity;
 
 import java.util.Collection;
+import java.util.Optional;
+
+import org.daisy.streamline.api.media.FileDetails;
 
 /**
  * <p>
@@ -25,6 +28,13 @@ public interface ValidatorFactoryMakerService {
 	 * @return returns true if a validator for the format identifier exists, false otherwise
 	 */
 	public Validator newValidator(String identifier);
+	
+	/**
+	 * Returns a new validator.
+	 * @param details the details for the file to validate
+	 * @return a validator
+	 */
+	public Optional<Validator> newValidator(FileDetails details);
 	
 	/**
 	 * Lists supported format identifiers.

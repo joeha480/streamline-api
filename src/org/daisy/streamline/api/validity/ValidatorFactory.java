@@ -2,6 +2,8 @@ package org.daisy.streamline.api.validity;
 
 import java.util.Collection;
 
+import org.daisy.streamline.api.media.FileDetails;
+
 /**
  * <p>
  * Provides an interface for a validator service. The purpose of this
@@ -29,9 +31,24 @@ public interface ValidatorFactory {
 	 * Creates a new validator instance.
 	 * @param identifier the format identifier
 	 * @return returns a new validator
-	 * @throws ValidatorFactoryException if a validator for the specified indentifer cannot be created
+	 * @throws ValidatorFactoryException if a validator for the specified identifier cannot be created
 	 */
 	public Validator newValidator(String identifier) throws ValidatorFactoryException;
+	
+	/**
+	 * Creates a new validator instance.
+	 * @param details the details for the file to validate
+	 * @return a validator
+	 * @throws ValidatorFactoryException if a validator for the specified identifier cannot be created
+	 */
+	public Validator newValidator(FileDetails details) throws ValidatorFactoryException;
+	
+	/**
+	 * Returns true if this factory can create a validator for the supplied details.
+	 * @param details the details
+	 * @return true if a validator can be created, false otherwise
+	 */
+	public boolean supportsDetails(FileDetails details);
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using

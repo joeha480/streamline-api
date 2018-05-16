@@ -9,7 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedInputStream;
 import org.daisy.streamline.api.media.DefaultAnnotatedFile;
+import org.daisy.streamline.api.media.DefaultAnnotatedInputStream;
+import org.daisy.streamline.api.media.InputStreamSupplier;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -97,6 +100,25 @@ public class IdentityProvider implements IdentityProviderService {
 		}
 		return f;
 	}
+	
+	@Override
+	public AnnotatedInputStream identify(InputStreamSupplier in) {
+		AnnotatedInputStream stream = DefaultAnnotatedInputStream.create(in);
+
+		// get a list of factories
+		List<IdentifierFactory> factories = new ArrayList<>(filters);
+		while (!factories.isEmpty()) {
+			try {
+				stream = identify(stream, factories);
+			} catch (IdentificationFailedException e) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.log(Level.FINE, "No matching identifier factories.", e);
+				}
+				break;
+			}
+		}
+		return stream;
+	}
 
 	private AnnotatedFile identify(AnnotatedFile f, List<IdentifierFactory> factories) throws IdentificationFailedException {
 		IdentificationFailedException ex = new IdentificationFailedException();
@@ -107,6 +129,23 @@ public class IdentityProvider implements IdentityProviderService {
 					// identification was successful, remove this from future iterations
 					factories.remove(id);
 					return x;
+				} catch (IdentificationFailedException e) {
+					ex.addSuppressed(e);
+				}
+			}
+		}
+		throw ex;
+	}
+
+	private AnnotatedInputStream identify(AnnotatedInputStream stream, List<IdentifierFactory> factories) throws IdentificationFailedException {
+		IdentificationFailedException ex = new IdentificationFailedException();
+		for (IdentifierFactory id : factories) {
+			if (id.accepts(stream)) {
+				try {
+					AnnotatedInputStream ret = id.newIdentifier().identify(stream);
+					// identification was successful, remove this from future iterations
+					factories.remove(id);
+					return ret;
 				} catch (IdentificationFailedException e) {
 					ex.addSuppressed(e);
 				}

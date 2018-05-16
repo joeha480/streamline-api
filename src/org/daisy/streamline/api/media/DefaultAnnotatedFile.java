@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,10 +14,7 @@ import java.util.Objects;
  */
 public class DefaultAnnotatedFile implements AnnotatedFile {
 	private final Path f;
-	private final String formatName;
-	private final String extension;
-	private final String mediaType;
-	private final Map<String, Object> props;
+	private final FileDetails details;
 	
 	/**
 	 * Provides a builder for an annotated file
@@ -28,10 +23,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	 */
 	public static class Builder {
 		private Path f;
-		private String formatName = null;
-		private String extension = null;
-		private String mediaType = null;
-		private Map<String, Object> props = new HashMap<>();
+		private final DefaultFileDetails.Builder details = new DefaultFileDetails.Builder();
 		
 		/**
 		 * Creates a new builder with the specified file as its file.
@@ -98,7 +90,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @return returns this builder
 		 */
 		public Builder formatName(String value) {
-			this.formatName = value;
+			details.formatName(value);
 			return this;
 		}
 
@@ -108,7 +100,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @return this builder
 		 */
 		public Builder extension(String value) {
-			this.extension = value;
+			details.extension(value);
 			return this;
 		}
 		
@@ -121,7 +113,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		@Deprecated
 		public Builder extension(File value) {
 			String inp = value.getName();
-			this.extension = findExtension(inp);
+			details.extension(findExtension(inp));
 			return this;
 		}
 		
@@ -132,7 +124,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 */
 		public Builder extension(Path value) {
 			String inp = value.getFileName().toString();
-			this.extension = findExtension(inp);
+			details.extension(findExtension(inp));
 			return this;
 		}
 		
@@ -147,7 +139,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @return this builder
 		 */
 		public Builder mediaType(String value) {
-			this.mediaType = value;
+			details.mediaType(value);
 			return this;
 		}
 		
@@ -161,7 +153,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 */
 		@Deprecated
 		public Builder mediaType(File value) throws IOException {
-			this.mediaType = Files.probeContentType(value.toPath());
+			details.mediaType(Files.probeContentType(value.toPath()));
 			return this;
 		}
 		
@@ -173,7 +165,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @throws IOException if an I/O error occurs
 		 */
 		public Builder mediaType(Path value) throws IOException {
-			this.mediaType = Files.probeContentType(value);
+			details.mediaType(Files.probeContentType(value));
 			return this;
 		}
 		
@@ -185,7 +177,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @return returns this builder
 		 */
 		public Builder property(String key, Object value) {
-			props.put(key, value);
+			details.property(key, value);
 			return this;
 		}
 		
@@ -196,7 +188,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 		 * @return returns this builder
 		 */
 		public Builder properties(Map<String, Object> values) {
-			props.putAll(values);
+			details.properties(values);
 			return this;
 		}
 
@@ -284,10 +276,7 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 
 	private DefaultAnnotatedFile(Builder builder) {
 		this.f = builder.f;
-		this.formatName = builder.formatName;
-		this.extension = builder.extension;
-		this.mediaType = builder.mediaType;
-		this.props = Collections.unmodifiableMap(builder.props);
+		this.details = builder.details.build();
 	}
 
 	@Override
@@ -303,22 +292,22 @@ public class DefaultAnnotatedFile implements AnnotatedFile {
 	
 	@Override
 	public String getFormatName() {
-		return formatName;
+		return details.getFormatName();
 	}
 
 	@Override
 	public String getExtension() {
-		return extension;
+		return details.getExtension();
 	}
 
 	@Override
 	public String getMediaType() {
-		return mediaType;
+		return details.getMediaType();
 	}
 
 	@Override
 	public Map<String, Object> getProperties() {
-		return props;
+		return details.getProperties();
 	}
 
 }

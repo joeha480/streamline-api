@@ -3,6 +3,8 @@ package org.daisy.streamline.api.identity;
 import java.io.File;
 
 import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedInputStream;
+import org.daisy.streamline.api.media.InputStreamSupplier;
 
 /**
  * <p>
@@ -28,4 +30,12 @@ public interface IdentityProviderService {
 	 * @return returns a file annotated with the type details
 	 */
 	public AnnotatedFile identify(File in);
+	
+	/**
+	 * Identifies the type of the supplied source.
+	 * @param in the source to identify
+	 * @return returns a annotated source with the type details
+	 */
+	public AnnotatedInputStream identify(InputStreamSupplier in);
+
 }

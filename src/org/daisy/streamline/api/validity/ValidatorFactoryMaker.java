@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.daisy.streamline.api.media.FileDetails;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -99,7 +101,7 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 	 * @param identifier a string that identifies the desired implementation
 	 * @return returns a Validator for the given identifier, or null if none is found
 	 */
-        @Override
+	@Override
 	public Validator newValidator(String identifier) {
 		if (identifier==null) {
 			return null;
@@ -120,7 +122,22 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 			return null;
 		}
 	}
-        
+
+	@Override
+	public Optional<Validator> newValidator(FileDetails details) {
+		if (details==null) {
+			return Optional.empty();
+		}
+		return providers.stream().filter(v->v.supportsDetails(details)).findFirst().map(v->{
+			try {
+				return v.newValidator(details);
+			} catch (ValidatorFactoryException e) {
+				logger.log(Level.WARNING, "Failed to create validator.", e);
+				return null;
+			}
+		});
+	}
+
 	@Override
 	public Collection<String> listIdentifiers() {
 		Set<String> ret = new HashSet<>();

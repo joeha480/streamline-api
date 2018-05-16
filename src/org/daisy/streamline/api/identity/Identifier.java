@@ -1,6 +1,8 @@
 package org.daisy.streamline.api.identity;
 
 import org.daisy.streamline.api.media.AnnotatedFile;
+import org.daisy.streamline.api.media.AnnotatedInputStream;
+import org.daisy.streamline.api.media.InputStreamSupplier;
 
 
 /**
@@ -17,5 +19,13 @@ public interface Identifier {
 	 * @throws IdentificationFailedException if identification is unsuccessful
 	 */
 	public AnnotatedFile identify(AnnotatedFile f) throws IdentificationFailedException;
+	
+	/**
+	 * Identifies the format of the specified source.
+	 * @param source the source to identify
+	 * @return returns the identified source
+	 * @throws IdentificationFailedException if identification is unsuccessful
+	 */
+	public AnnotatedInputStream identify(InputStreamSupplier source) throws IdentificationFailedException;
 	
 }
