@@ -1,6 +1,7 @@
 package org.daisy.streamline.api.validity;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.daisy.streamline.api.media.FileDetails;
 
@@ -44,11 +45,24 @@ public interface ValidatorFactory {
 	public Validator newValidator(FileDetails details) throws ValidatorFactoryException;
 	
 	/**
-	 * Returns true if this factory can create a validator for the supplied details.
+	 * <p>Returns a double if this factory can create a validator for the supplied details.
+	 * The higher the value, the higher the accuracy of the implementation for the 
+	 * specified details. A positive value implies that a format specific implementation
+	 * is available. A negative value implies that some generic method is employed that
+	 * may be used on some set of similar formats, but which may not validate the
+	 * content on all levels of abstraction.</p>
+	 * <p>For example, a file may be a <em>valid</em> ZIP container, but the data inside
+	 * it may not be validated against applicable format specifications. Similarly, an 
+	 * XML-file may be validated using a DTD (or even just the XML-specification), but
+	 * the format to which the DTD belongs could mandate additional constraints which
+	 * cannot be validated without providing a format specific implementation. In these
+	 * cases, a negative value of some magnitude should be used.</p>
+	 * 
 	 * @param details the details
-	 * @return true if a validator can be created, false otherwise
+	 * @return a double if a validator can be created,
+	 * 		 or an empty optional if no validator can be created.
 	 */
-	public boolean supportsDetails(FileDetails details);
+	public Optional<Double> supportsDetails(FileDetails details);
 
 	/**
 	 * <p>Informs the implementation that it was discovered and instantiated using

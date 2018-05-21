@@ -128,14 +128,18 @@ public class ValidatorFactoryMaker implements ValidatorFactoryMakerService {
 		if (details==null) {
 			return Optional.empty();
 		}
-		return providers.stream().filter(v->v.supportsDetails(details)).findFirst().map(v->{
-			try {
-				return v.newValidator(details);
-			} catch (ValidatorFactoryException e) {
-				logger.log(Level.WARNING, "Failed to create validator.", e);
-				return null;
-			}
-		});
+		return providers.stream()
+				.filter(v->v.supportsDetails(details).isPresent())
+				.sorted((a, b)->Double.compare(b.supportsDetails(details).get(), a.supportsDetails(details).get()))
+				.findFirst()
+				.map(v->{
+					try {
+						return v.newValidator(details);
+					} catch (ValidatorFactoryException e) {
+						logger.log(Level.WARNING, "Failed to create validator.", e);
+						return null;
+					}
+				});
 	}
 
 	@Override
