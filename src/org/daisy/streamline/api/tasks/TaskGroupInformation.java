@@ -26,6 +26,8 @@ public class TaskGroupInformation {
 	private final String locale;
 	private final TaskGroupActivity type;
 	private final List<UserOption> keys;
+	// do not include in equals/hashcode
+	private final int evaluationDistance;
 	
 	/**
 	 * Provides a builder for task group information
@@ -37,6 +39,7 @@ public class TaskGroupInformation {
 		// optional
 		private String locale = null; 
 		private List<UserOption> keys = null;
+		private int evaluationDistance = 0;
 
 		/**
 		 * Creates a new builder with the specified options
@@ -98,6 +101,20 @@ public class TaskGroupInformation {
 		}
 		
 		/**
+		 * Sets the evaluation distance for the builder.
+		 * @param value the value, must be greater than or equal to 0.
+		 * @return this builder
+		 * @throws IllegalArgumentException if the value is less than zero
+		 */
+		public Builder evaluationDistance(int value) {
+			if (value<0) {
+				throw new IllegalArgumentException("Value must be greater than or equal to zero: " + value);
+			}
+			this.evaluationDistance = value;
+			return this;
+		}
+		
+		/**
 		 * Creates a new task group information based on the current state of the builder.
 		 * @return returns a new task group information instance
 		 */
@@ -147,6 +164,7 @@ public class TaskGroupInformation {
 		this.output = builder.output;
 		this.type = builder.type;
 		this.locale = builder.locale;
+		this.evaluationDistance = builder.evaluationDistance;
 		if (builder.keys==null) {
 			this.keys = Collections.emptyList(); 
 		} else {
@@ -250,6 +268,18 @@ public class TaskGroupInformation {
 	 */
 	public boolean matchesLocale(String loc) {
 		return getLocale()==null || getLocale().startsWith(loc);
+	}
+	
+	/**
+	 * Gets the evaluation distance. A value greater than zero indicates that the task group should have
+	 * it's evaluation distance increased by the returned amount. In other words, a task group chain
+	 * containing this task group will have its distance increased, making it less likely to be chosen,
+	 * if there are other, shorter paths.
+	 * 
+	 * @return the evaluation distance
+	 */
+	public int getEvaluationDistance() {
+		return evaluationDistance;
 	}
 
 	@Override

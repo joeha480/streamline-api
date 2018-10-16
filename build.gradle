@@ -56,6 +56,9 @@ dependencies {
 
 def matchesPackageInfo() {
 	def v = (version =~ /([\d]+\.[\d]+)/)[0][1]
+	if (v==dummyPackageinfo) {
+		return true
+	}
 	//println v
 	FileTree tree = fileTree(dir: 'src')
 	tree.include('**/packageinfo')
