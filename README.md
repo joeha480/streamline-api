@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.com/brailleapps/streamline-api.svg?branch=master)](https://travis-ci.com/brailleapps/streamline-api)
-[![Type](https://img.shields.io/badge/type-api-blue.svg)](https://github.com/brailleapps/wiki/wiki/Types)
+[![Build Status](https://travis-ci.com/ologolo/streamline-api.svg?branch=master)](https://travis-ci.com/ologolo/streamline-api)
+[![Type](https://img.shields.io/badge/type-api-blue.svg)](https://github.com/ologolo/wiki/wiki/Types)
 [![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL%20v2%2E1%20%28or%20later%29-blue.svg)](https://www.gnu.org/licenses/lgpl-2.1)
 
 # Streamline API #
@@ -22,7 +22,7 @@ Tests are run with `gradlew test` (Windows) or `./gradlew test` (Mac/Linux)
 - Implementations can be provided with SPI and/or OSGi
 
 ## Javadoc ##
-Javadoc for the latest Streamline API development is available [here](http://brailleapps.github.io/streamline-api/latest/javadoc/).
+Javadoc for the latest Streamline API development is available [here](http://ologolo.github.io/streamline-api/latest/javadoc/).
 
 ## More information ##
-See the [common wiki](https://github.com/brailleapps/wiki/wiki) for more information.
+See the [common wiki](https://github.com/ologolo/wiki/wiki) for more information.
