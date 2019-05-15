@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -16,6 +17,7 @@ import java.util.Set;
 public final class UserOption {
 	private final List<UserOptionValue> values;
 	private final String 	key,
+							displayName,
 							description,
 							defaultValue;
 	
@@ -26,6 +28,7 @@ public final class UserOption {
 	 */
 	public static class Builder {
 		private final String key;
+		private String displayName = null;
 		private String description = "";
 		private String defaultValue = "";
 		private List<UserOptionValue> values;
@@ -40,9 +43,19 @@ public final class UserOption {
 		}
 		
 		/**
+		 * Sets the option's display name.
+		 * @param value the display name
+		 * @return this builder
+		 */
+		public Builder displayName(String value) {
+			this.displayName = value;
+			return this;
+		}
+		
+		/**
 		 * Sets the option's description.
 		 * @param value the description
-		 * @return returns this builder
+		 * @return this builder
 		 */
 		public Builder description(String value) {
 			this.description = value;
@@ -52,7 +65,7 @@ public final class UserOption {
 		/**
 		 * Sets the option's default value. 
 		 * @param value the default value
-		 * @return returns this builder
+		 * @return this builder
 		 */
 		public Builder defaultValue(String value) {
 			this.defaultValue = value;
@@ -64,7 +77,7 @@ public final class UserOption {
 		 * added, any value is accepted.
 		 * 
 		 * @param value the value
-		 * @return returns this builder
+		 * @return this builder
 		 */
 		public Builder addValue(UserOptionValue value) {
 			values.add(value);
@@ -73,7 +86,7 @@ public final class UserOption {
 		
 		/**
 		 * Creates a new user option based on the current state of the builder.
-		 * @return returns a new user option
+		 * @return a new user option
 		 */
 		public UserOption build() {
 			return new UserOption(this);
@@ -83,7 +96,7 @@ public final class UserOption {
 	/**
 	 * Creates a new user option with the specified key.
 	 * @param key the key
-	 * @return returns a new builder
+	 * @return a new builder
 	 */
 	public static UserOption.Builder withKey(String key) {
 		return new UserOption.Builder(key);
@@ -91,6 +104,7 @@ public final class UserOption {
 
 	private UserOption(Builder builder) {
 		this.key = builder.key;
+		this.displayName = Optional.ofNullable(builder.displayName).orElse(key);
 		this.description = builder.description;
 		this.defaultValue = builder.defaultValue;
 		if (builder.values.size()>0) {
@@ -103,15 +117,23 @@ public final class UserOption {
 
 	/**
 	 * Gets the key for the option
-	 * @return returns the key
+	 * @return the key
 	 */
 	public String getKey() {
 		return key;
 	}
+	
+	/**
+	 * Gets the display name for the option
+	 * @return the display name
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
 
 	/**
 	 * Gets the description of the option.
-	 * @return returns the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
@@ -119,7 +141,7 @@ public final class UserOption {
 
 	/**
 	 * Gets the default value for the option, if not set.
-	 * @return returns the default value
+	 * @return the default value
 	 */
 	public String getDefaultValue() {
 		return defaultValue;
@@ -127,7 +149,7 @@ public final class UserOption {
 	
 	/**
 	 * Returns true if this argument has a finite list of acceptable values.
-	 * @return returns true if a finite list of acceptable values exist, false otherwise
+	 * @return true if a finite list of acceptable values exist, false otherwise
 	 */
 	public boolean hasValues() {
 		return values!=null && values.size()>0;
@@ -135,7 +157,7 @@ public final class UserOption {
 	
 	/**
 	 * Gets the list of acceptable values.
-	 * @return returns the list of acceptable values, or null if the list of possible values 
+	 * @return the list of acceptable values, or null if the list of possible values 
 	 * is infinite
 	 */
 	public List<UserOptionValue> getValues() {

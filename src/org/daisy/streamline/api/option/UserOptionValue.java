@@ -1,5 +1,7 @@
 package org.daisy.streamline.api.option;
 
+import java.util.Optional;
+
 /**
  * Provides a value and the description of that value, to be used
  * in a finite list of acceptable values for a user option.
@@ -9,6 +11,7 @@ package org.daisy.streamline.api.option;
  */
 public final class UserOptionValue {
 	private final String 	name,
+							displayName,
 							description;
 	
 	/**
@@ -16,10 +19,11 @@ public final class UserOptionValue {
 	 */
 	public static class Builder {
 		private final String name;
+		private String displayName = null;
 		private String description = "";
 		
 		/**
-		 * Creates a new builder with the specified option value name 
+		 * Creates a new builder with the specified option value name.
 		 * @param name the option value's name
 		 */
 		public Builder(String name) {
@@ -27,9 +31,19 @@ public final class UserOptionValue {
 		}
 		
 		/**
+		 * Sets the value's display name.
+		 * @param value the display name
+		 * @return this builder
+		 */
+		public Builder displayName(String value) {
+			this.displayName = value;
+			return this;
+		}
+		
+		/**
 		 * Sets the value's description.
 		 * @param value the description
-		 * @return returns this builder
+		 * @return this builder
 		 */
 		public Builder description(String value) {
 			this.description = value;
@@ -38,7 +52,7 @@ public final class UserOptionValue {
 		
 		/**
 		 * Creates a new user option value based on the current state of the builder.
-		 * @return returns a new user option value
+		 * @return a new user option value
 		 */
 		public UserOptionValue build() {
 			return new UserOptionValue(this);
@@ -49,7 +63,7 @@ public final class UserOptionValue {
 	 * Creates a new user option value with the specified
 	 * name.
 	 * @param name the name of the value
-	 * @return returns a new builder
+	 * @return a new builder
 	 */
 	public static UserOptionValue.Builder withName(String name) {
 		return new UserOptionValue.Builder(name);
@@ -57,6 +71,7 @@ public final class UserOptionValue {
 
 	private UserOptionValue(Builder builder) {
 		this.name = builder.name;
+		this.displayName = Optional.ofNullable(builder.displayName).orElse(name);
 		this.description = builder.description;
 	}
 
@@ -64,15 +79,23 @@ public final class UserOptionValue {
 	 * Gets the name for the option value. Note that the name should be 
 	 * a unique <b>value</b> in the list of values for the option. It is
 	 * <b>NOT</b> the option's key.
-	 * @return returns the name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Gets the display name for the option value.
+	 * @return the display name
+	 */
+	public String getDisplayName() {
+		return displayName;
+	}
 
 	/**
 	 * Gets the description of the option.
-	 * @return returns the description
+	 * @return the description
 	 */
 	public String getDescription() {
 		return description;
